@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Dijkstra {
 
-    public List<Parada> dijkstra(Parada origen, Parada destino, Grafo grafo) {
+    public List<Parada> dijkstra(Parada origen, Parada destino, Grafo grafo, CriterioOptimizacion criterio) {
 
         Map<Parada, Double> distancia = new HashMap<>();
         Map<Parada, Parada> anterior = new HashMap<>();
@@ -28,15 +28,22 @@ public class Dijkstra {
 
             for (Ruta r : actual.getRutasSalientes()) {
                 Parada vecino = r.getParadaDestino();
-                double nuevaDistancia =
-                        distancia.get(actual) + r.getDistancia();
-                if (nuevaDistancia < distancia.get(vecino)) {
-                    distancia.put(vecino, nuevaDistancia);
-                    anterior.put(vecino, actual);
+
+                // NO SE RELAJA UN VECINO QUE YA FUE PROCESADO COMO VISITADO.
+                if (!visitados.contains(vecino)) {
+                    // USA EL PESO DE LA RUTA SEGÚN EL CRITERIO SELECCIONADO.
+                    double nuevaDistancia = distancia.get(actual) + r.getPeso(criterio);
+
+
+                    if (nuevaDistancia < distancia.get(vecino)) {
+                        distancia.put(vecino, nuevaDistancia);
+                        anterior.put(vecino, actual);
+                    }
                 }
             }
             actual = null;
             double menor = Double.MAX_VALUE;
+
             for (Parada p : distancia.keySet()) {
 
                 if (!visitados.contains(p) && distancia.get(p) < menor) {
@@ -48,6 +55,12 @@ public class Dijkstra {
                 break;
             }
         }
+
+        // SI EL DESTINO SIGUE EN INFINITO, SIGNIFICA QUE NO EXISTE CAMINO DESDE EL ORIGEN.
+        if (distancia.get(destino) == Double.MAX_VALUE) {
+            return new ArrayList<>();
+        }
+
         List<Parada> camino = new ArrayList<>();
         Parada paso = destino;
         while (paso != null) {

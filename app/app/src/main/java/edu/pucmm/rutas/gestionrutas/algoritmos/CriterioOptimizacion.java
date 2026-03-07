@@ -1,4 +1,8 @@
 package edu.pucmm.rutas.gestionrutas.algoritmos;
 
-public class CriterioOptimizacion {
+public enum CriterioOptimizacion {
+    TIEMPO,
+    DISTANCIA,
+    COSTO,
+    TRANSBORDOS
 }

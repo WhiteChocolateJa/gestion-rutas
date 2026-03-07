@@ -1,5 +1,7 @@
 package edu.pucmm.rutas.gestionrutas.modelo;
 
+import edu.pucmm.rutas.gestionrutas.algoritmos.CriterioOptimizacion;
+
 public class Ruta {
 
     private Parada paradaOrigen;
@@ -41,4 +43,24 @@ public class Ruta {
     public int getTransbordos() {
         return transbordos;
     }
+
+
+    // Determina el peso de la ruta según el criterio de optimización seleccionado.
+    // Este metodo permite que los algoritmos (por ejemplo Dijkstra) utilicen
+    // diferentes métricas como tiempo, distancia, costo o transbordos sin
+    // modificar la lógica del algoritmo, mejorando la escalabilidad del sistema.
+    public double getPeso(CriterioOptimizacion criterio) {
+        if (criterio == CriterioOptimizacion.TIEMPO) {
+            return tiempoViaje;
+        } else if (criterio == CriterioOptimizacion.DISTANCIA) {
+            return distancia;
+        } else if (criterio == CriterioOptimizacion.COSTO) {
+            return costo;
+        } else if (criterio == CriterioOptimizacion.TRANSBORDOS) {
+            return transbordos;
+        }
+        throw new IllegalArgumentException("Criterio no válido");
+    }
+
+
 }
