@@ -4,6 +4,7 @@ import edu.pucmm.rutas.gestionrutas.algoritmos.CriterioOptimizacion;
 
 public class Ruta {
 
+    private String id;
     private Parada paradaOrigen;
     private Parada paradaDestino;
     private double tiempoViaje;
@@ -11,7 +12,8 @@ public class Ruta {
     private double costo;
     private int transbordos;
 
-    public Ruta(Parada paradaOrigen, Parada paradaDestino, double tiempoViaje, double distancia, double costo, int transbordos) {
+    public Ruta(String id, Parada paradaOrigen, Parada paradaDestino, double tiempoViaje, double distancia, double costo, int transbordos) {
+        this.id = id;
         this.paradaOrigen = paradaOrigen;
         this.paradaDestino = paradaDestino;
         this.tiempoViaje = tiempoViaje;
@@ -19,7 +21,9 @@ public class Ruta {
         this.costo = costo;
         this.transbordos = transbordos;
     }
-
+    public String getId() {
+        return id;
+    }
     public Parada getParadaOrigen() {
         return paradaOrigen;
     }
