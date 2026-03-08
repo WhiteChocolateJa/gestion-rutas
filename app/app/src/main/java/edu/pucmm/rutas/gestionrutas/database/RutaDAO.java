@@ -13,17 +13,19 @@ public class RutaDAO {
 
     // GUARDA UNA RUTA NUEVA EN LA BASE DE DATOS
     public void guardar(Ruta ruta) {
-        String sql = "INSERT INTO rutas (parada_origen_id, parada_destino_id, tiempo_viaje, distancia, costo, transbordos) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO rutas (id, parada_origen_id, parada_destino_id, tiempo_viaje, distancia, costo, transbordos) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
-            stmt.setString(1, ruta.getParadaOrigen().getId());
-            stmt.setString(2, ruta.getParadaDestino().getId());
-            stmt.setDouble(3, ruta.getTiempoViaje());
-            stmt.setDouble(4, ruta.getDistancia());
-            stmt.setDouble(5, ruta.getCosto());
-            stmt.setInt(6, ruta.getTransbordos());
+            stmt.setString(1, ruta.getId());
+            stmt.setString(2, ruta.getParadaOrigen().getId());
+            stmt.setString(3, ruta.getParadaDestino().getId());
+            stmt.setDouble(4, ruta.getTiempoViaje());
+            stmt.setDouble(5, ruta.getDistancia());
+            stmt.setDouble(6, ruta.getCosto());
+            stmt.setInt(7, ruta.getTransbordos());
 
             stmt.executeUpdate();
             System.out.println("Ruta guardada correctamente.");
@@ -34,20 +36,21 @@ public class RutaDAO {
         }
     }
 
-    // ACTUALIZA UNA RUTA EXISTENTE SEGUN ORIGEN Y DESTINO
+    // ACTUALIZA UNA RUTA EXISTENTE SEGUN SU ID
     public void actualizar(Ruta ruta) {
-        String sql = "UPDATE rutas SET tiempo_viaje = ?, distancia = ?, costo = ?, transbordos = ? " +
-                "WHERE parada_origen_id = ? AND parada_destino_id = ?";
+        String sql = "UPDATE rutas SET parada_origen_id = ?, parada_destino_id = ?, tiempo_viaje = ?, distancia = ?, costo = ?, transbordos = ? " +
+                "WHERE id = ?";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
-            stmt.setDouble(1, ruta.getTiempoViaje());
-            stmt.setDouble(2, ruta.getDistancia());
-            stmt.setDouble(3, ruta.getCosto());
-            stmt.setInt(4, ruta.getTransbordos());
-            stmt.setString(5, ruta.getParadaOrigen().getId());
-            stmt.setString(6, ruta.getParadaDestino().getId());
+            stmt.setString(1, ruta.getParadaOrigen().getId());
+            stmt.setString(2, ruta.getParadaDestino().getId());
+            stmt.setDouble(3, ruta.getTiempoViaje());
+            stmt.setDouble(4, ruta.getDistancia());
+            stmt.setDouble(5, ruta.getCosto());
+            stmt.setInt(6, ruta.getTransbordos());
+            stmt.setString(7, ruta.getId());
 
             int filasAfectadas = stmt.executeUpdate();
 
@@ -63,15 +66,14 @@ public class RutaDAO {
         }
     }
 
-    // ELIMINA UNA RUTA SEGUN SU PARADA ORIGEN Y DESTINO
-    public void eliminar(String idOrigen, String idDestino) {
-        String sql = "DELETE FROM rutas WHERE parada_origen_id = ? AND parada_destino_id = ?";
+    // ELIMINA UNA RUTA SEGUN SU ID
+    public void eliminar(String idRuta) {
+        String sql = "DELETE FROM rutas WHERE id = ?";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
-            stmt.setString(1, idOrigen);
-            stmt.setString(2, idDestino);
+            stmt.setString(1, idRuta);
 
             int filasAfectadas = stmt.executeUpdate();
 
@@ -87,11 +89,48 @@ public class RutaDAO {
         }
     }
 
+    // BUSCA UNA RUTA POR SU ID
+    public Ruta buscarPorId(String idRuta) {
+        String sql = "SELECT * FROM rutas WHERE id = ?";
+
+        ParadaDAO paradaDAO = new ParadaDAO();
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement stmt = conexion.prepareStatement(sql)) {
+
+            stmt.setString(1, idRuta);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Parada origen = paradaDAO.buscarPorId(rs.getString("parada_origen_id"));
+                    Parada destino = paradaDAO.buscarPorId(rs.getString("parada_destino_id"));
+
+                    if (origen != null && destino != null) {
+                        return new Ruta(
+                                rs.getString("id"),
+                                origen,
+                                destino,
+                                rs.getDouble("tiempo_viaje"),
+                                rs.getDouble("distancia"),
+                                rs.getDouble("costo"),
+                                rs.getInt("transbordos")
+                        );
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al buscar la ruta por ID.");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     // OBTIENE TODAS LAS RUTAS DE LA BASE DE DATOS
-    // NECESITA LAS PARADAS YA CARGADAS PARA RECONSTRUIR CADA OBJETO Ruta
     public List<Ruta> obtenerTodas() {
         List<Ruta> rutas = new ArrayList<>();
-        String sql = "SELECT * FROM rutas ORDER BY parada_origen_id, parada_destino_id";
+        String sql = "SELECT * FROM rutas ORDER BY id";
 
         ParadaDAO paradaDAO = new ParadaDAO();
 
@@ -100,14 +139,12 @@ public class RutaDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                String idOrigen = rs.getString("parada_origen_id");
-                String idDestino = rs.getString("parada_destino_id");
-
-                Parada origen = paradaDAO.buscarPorId(idOrigen);
-                Parada destino = paradaDAO.buscarPorId(idDestino);
+                Parada origen = paradaDAO.buscarPorId(rs.getString("parada_origen_id"));
+                Parada destino = paradaDAO.buscarPorId(rs.getString("parada_destino_id"));
 
                 if (origen != null && destino != null) {
                     Ruta ruta = new Ruta(
+                            rs.getString("id"),
                             origen,
                             destino,
                             rs.getDouble("tiempo_viaje"),

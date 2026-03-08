@@ -43,10 +43,7 @@ public class GrafoRepository {
         // ELIMINAR TODAS LAS RUTAS
         List<Ruta> rutasExistentes = rutaDAO.obtenerTodas();
         for (Ruta ruta : rutasExistentes) {
-            rutaDAO.eliminar(
-                    ruta.getParadaOrigen().getId(),
-                    ruta.getParadaDestino().getId()
-            );
+            rutaDAO.eliminar(ruta.getId());
         }
 
         // ELIMINAR TODAS LAS PARADAS

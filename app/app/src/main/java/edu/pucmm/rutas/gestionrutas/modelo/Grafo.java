@@ -54,8 +54,7 @@ public class Grafo {
         for (int i = 0; i < rutas2.size(); i++) {
             Ruta rutaExistente = rutas2.get(i);
 
-            if (rutaExistente.getParadaDestino().getId()
-                    .equals(rutaActualizada.getParadaDestino().getId())) {
+            if (rutaExistente.getId().equals(rutaActualizada.getId())) {
                 rutas2.set(i, rutaActualizada);
                 break;
             }
