@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="417.0" text="Visualizar rutas" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.HelloController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="374.0" prefWidth="332.0">
+         <children>
+            <TableView fx:id="RUTAS" layoutX="14.0" layoutY="20.0" prefHeight="245.0" prefWidth="386.0">
+              <columns>
+                <TableColumn fx:id="COLIDR" prefWidth="75.0" text="ID" />
+                <TableColumn fx:id="COLOIRG" prefWidth="153.0" text="ORIGEN" />
+                  <TableColumn fx:id="COLDEST" prefWidth="156.0" text="DESTINO" />
+              </columns>
+            </TableView>
+         </children></AnchorPane>
+  </content>
+</TitledPane>

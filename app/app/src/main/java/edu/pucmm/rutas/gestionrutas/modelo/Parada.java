@@ -86,4 +86,9 @@ public class Parada {
     public void eliminarRuta(Ruta ruta) {
         this.rutasSalientes.remove(ruta);
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }
