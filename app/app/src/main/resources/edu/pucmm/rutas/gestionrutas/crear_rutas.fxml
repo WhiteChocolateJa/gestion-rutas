@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="382.0" prefWidth="318.0" text="Creación de rutas" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.HelloController">
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="382.0" prefWidth="318.0" text="Creación de rutas" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.HelloController">
   <content>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="374.0" prefWidth="307.0" style="-fx-background-color: #0d1b2a">
          <children>
@@ -21,8 +26,8 @@
             <Spinner fx:id="spnCosto" layoutX="38.0" layoutY="249.0" prefHeight="25.0" prefWidth="107.0" />
             <Label layoutX="197.0" layoutY="220.0" prefHeight="17.0" prefWidth="74.0" style="-fx-text-fill: white" text="Transbordo" />
             <Spinner fx:id="spnTrasbordo" layoutX="171.0" layoutY="249.0" prefHeight="25.0" prefWidth="107.0" />
-            <Button fx:id="aceptarRuta" layoutX="190.0" layoutY="313.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Aceptar" />
-            <Button fx:id="cancelarRuta" layoutX="85.0" layoutY="313.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" onAction="#cerrarVentana" text="Cancelar" />
+            <Button fx:id="aceptarRuta" layoutX="190.0" layoutY="313.0" mnemonicParsing="false" onAction="#aceptarRuta" prefHeight="25.0" prefWidth="87.0" text="Aceptar" />
+            <Button fx:id="cancelarRuta" layoutX="85.0" layoutY="313.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="25.0" prefWidth="87.0" text="Cancelar" />
          </children></AnchorPane>
   </content>
 </TitledPane>

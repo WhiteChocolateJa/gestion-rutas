@@ -87,6 +87,9 @@ public class Parada {
         this.rutasSalientes.remove(ruta);
     }
 
+
+
+    // este metodo define como se muestra un objeto cuando Java intenta convertirlo a texto, para no pasar el objeto sino el texto al combobox
     @Override
     public String toString() {
         return nombre;

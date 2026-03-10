@@ -1,9 +1,12 @@
 package edu.pucmm.rutas.gestionrutas;
 
+
 import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
 import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
 import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,8 +20,8 @@ import java.io.IOException;
 
 public class HelloController {
 
-    private GrafoRepository grafoBaseDatos= new GrafoRepository();
-    private Grafo elGrafo = grafoBaseDatos.cargarGrafo();
+    private static final GrafoRepository grafoBaseDatos= new GrafoRepository();
+    private static Grafo elGrafo = grafoBaseDatos.cargarGrafo();
 
     //CREAR PARADAS
     @FXML
@@ -62,21 +65,22 @@ public class HelloController {
     }
 
     @FXML
-    public void aceptarLaParada(){
+    public void aceptarLaParada() {
         String codigo = txtCodigo.getText();
         String nombre = txtNombre.getText();
+
         Parada parada = new Parada(codigo, nombre, 0.0, 0.0);
+        parada.setDescripcion(txtDescripcion.getText());
+        parada.setZona(txtZona.getText());
+
         elGrafo.anadirParada(parada);
+        grafoBaseDatos.sincronizar(elGrafo);
+        elGrafo = grafoBaseDatos.cargarGrafo();
+
         Stage stage = (Stage) txtCodigo.getScene().getWindow();
         stage.close();
     }
 
-    @FXML
-    public void cargarParadas(){
-        cbxDireccion.getItems().addAll(
-                elGrafo.getParadas().values()
-        );
-    }
 
     //CREAR RUTAS
 
@@ -116,39 +120,37 @@ public class HelloController {
         stage.show();
     }
 
-    public void cargarParadasOrigen(){
-        cbxOrigen.getItems().addAll(
-                elGrafo.getParadas().values()
-        );
-    }
 
-    public void cargarParadasDestino(){
-        cbxDestino.getItems().addAll(
-                elGrafo.getParadas().values()
-        );
-    }
-
-    public void aceptarRuta(){
-        Parada origen =  cbxOrigen.getValue();
+    @FXML
+    public void aceptarRuta() {
+        Parada origen = cbxOrigen.getValue();
         Parada destino = cbxDestino.getValue();
         String codigo = txtCodigorRuta.getText();
-        Double costo = spnCosto.getValue();
-        Double distancia = spnDistancia.getValue();
-        Integer trasbordo = spnTrasbordo.getValue();
         Double tiempo = spnTiempo.getValue();
-        Ruta laruta = new Ruta(codigo, origen, destino, tiempo, costo, distancia, trasbordo);
-        elGrafo.anadirRuta(laruta);
+        Double distancia = spnDistancia.getValue();
+        Double costo = spnCosto.getValue();
+        Integer trasbordo = spnTrasbordo.getValue();
+
+        System.out.println("Entró a aceptarRuta");
+
+        Ruta laRuta = new Ruta(codigo, origen, destino, tiempo, distancia, costo, trasbordo);
+
+        elGrafo.anadirRuta(laRuta);
+        grafoBaseDatos.sincronizar(elGrafo);
+        elGrafo = grafoBaseDatos.cargarGrafo();
+
         Stage stage = (Stage) txtCodigorRuta.getScene().getWindow();
         stage.close();
+
     }
 
     //VISUALIZAR LAS PARADAS
     @FXML
-    private TableColumn COLUMID;
+    private TableColumn<Parada, String>COLUMID;
     @FXML
-    private TableColumn COLUMNOM;
+    private TableColumn<Parada, String> COLUMNOM;
     @FXML
-    private TableView TABLA;
+    private TableView<Parada> TABLA;
 
     @FXML
     public void abrirVerParadas() throws IOException {
@@ -165,26 +167,21 @@ public class HelloController {
         stage.show();
     }
 
-    public void cargarDatosTabla() {
-        COLUMID.setCellValueFactory(new PropertyValueFactory<>("id"));
-        COLUMNOM.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        TABLA.getItems().addAll(elGrafo.getParadas().values());
-    }
-
     //VISUALIZAR RUTAS
 
     @FXML
-    private TableView RUTAS;
+    private TableView<Ruta> RUTAS;
 
     @FXML
-    private TableColumn COLIDR;
+    private TableColumn<Ruta, String> COLIDR;
 
     @FXML
-    private TableColumn COLOIRG;
+    private TableColumn<Ruta, Parada> COLOIRG;
 
     @FXML
-    private TableColumn COLDEST;
+    private TableColumn<Ruta, Parada> COLDEST;
 
+    @FXML
     public void abrirVerRutas() throws IOException {
 
         FXMLLoader loader = new FXMLLoader(
@@ -199,10 +196,53 @@ public class HelloController {
         stage.show();
     }
 
-    public void cargarDatosTablaRutas() {
-        COLIDR.setCellValueFactory(new PropertyValueFactory<>("id"));
-        COLOIRG.setCellValueFactory(new PropertyValueFactory<>("paradaOrigen"));
-        COLDEST.setCellValueFactory(new PropertyValueFactory<>("paradaDestino"));
-        RUTAS.getItems().addAll(elGrafo.getRutas().values());
+
+    @FXML
+    public void initialize() {
+
+        if (cbxDireccion != null) {
+            cbxDireccion.getItems().setAll(elGrafo.getParadas().values());
+        }
+
+        if (cbxOrigen != null) {
+            cbxOrigen.getItems().setAll(elGrafo.getParadas().values());
+        }
+
+        if (cbxDestino != null) {
+            cbxDestino.getItems().setAll(elGrafo.getParadas().values());
+        }
+
+        if (spnTiempo != null) {
+            spnTiempo.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, 0, 1));
+        }
+
+        if (spnDistancia != null) {
+            spnDistancia.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100000, 0, 1));
+        }
+
+        if (spnCosto != null) {
+            spnCosto.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100000, 0, 1));
+        }
+
+        if (spnTrasbordo != null) {
+            spnTrasbordo.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0, 1));
+        }
+
+        if (TABLA != null) {
+            COLUMID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            COLUMNOM.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+
+            ObservableList<Parada> listaParadas = FXCollections.observableArrayList(elGrafo.getParadas().values());
+            TABLA.setItems(listaParadas);
+        }
+
+        if (RUTAS != null) {
+            COLIDR.setCellValueFactory(new PropertyValueFactory<>("id"));
+            COLOIRG.setCellValueFactory(new PropertyValueFactory<>("paradaOrigen"));
+            COLDEST.setCellValueFactory(new PropertyValueFactory<>("paradaDestino"));
+
+            ObservableList<Ruta> listaRutas = FXCollections.observableArrayList(elGrafo.getRutas().values());
+            RUTAS.setItems(listaRutas);
+        }
     }
 }

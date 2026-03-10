@@ -1,7 +1,5 @@
 package edu.pucmm.rutas.gestionrutas.modelo;
 
-import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,24 +18,17 @@ public class Grafo {
     public Map<String, Ruta> getRutas() {
         return rutas;
     }
-    private GrafoRepository grafoBaseDatos =  new GrafoRepository();
 
     public Grafo() {
         this.paradas = new HashMap<>();
         this.rutas = new HashMap<>();
-        //Grafo grafoCargado = grafoBaseDatos.cargarGrafo();
-        //this.rutas.putAll(grafoCargado.getRutas());
-        //this.paradas.putAll(grafoCargado.getParadas());
     }
-
 
     // AGREGA UNA PARADA AL GRAFO SOLO SI SU ID NO EXISTE YA.
     // ESTO EVITA DUPLICADOS BÁSICOS EN LA ESTRUCTURA.
     public void anadirParada(Parada paradaAgregar) {
-
         if(!this.paradas.containsKey(paradaAgregar.getId())) {
             this.paradas.put(paradaAgregar.getId(), paradaAgregar);
-            grafoBaseDatos.sincronizar(this);
         }
     }
 
@@ -46,11 +37,9 @@ public class Grafo {
     public void anadirRuta(Ruta ruta) {
         Parada origen = ruta.getParadaOrigen();
         Parada destino = ruta.getParadaDestino();
-
         if (paradas.containsKey(origen.getId()) && paradas.containsKey(destino.getId())) {
             origen.agregarRuta(ruta);
             rutas.put(ruta.getId(), ruta);
-            grafoBaseDatos.sincronizar(this);
         }
     }
 

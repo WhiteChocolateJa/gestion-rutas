@@ -58,10 +58,8 @@ public class GrafoRepository {
         }
 
         // GUARDAR RUTAS DEL GRAFO ACTUAL
-        for (Parada parada : grafo.getParadas().values()) {
-            for (Ruta ruta : parada.getRutasSalientes()) {
-                rutaDAO.guardar(ruta);
-            }
+        for (Ruta ruta : grafo.getRutas().values()) {
+            rutaDAO.guardar(ruta);
         }
 
         System.out.println("Grafo sincronizado correctamente con la base de datos.");
