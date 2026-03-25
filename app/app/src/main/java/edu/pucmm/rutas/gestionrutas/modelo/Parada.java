@@ -23,6 +23,10 @@ public class Parada {
         this.rutasSalientes = new ArrayList<Ruta>();
     }
 
+    public Parada(String id, String nombre){
+        this(id, nombre, 0.0, 0.0);
+    }
+
     public void setActiva(boolean activa) {
         this.activa = activa;
     }
