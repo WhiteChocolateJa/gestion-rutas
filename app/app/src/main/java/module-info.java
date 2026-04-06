@@ -16,4 +16,5 @@ module edu.pucmm.rutas.gestionrutas {
         exports edu.pucmm.rutas.gestionrutas.database;
         exports edu.pucmm.rutas.gestionrutas.algoritmos;
         exports edu.pucmm.rutas.gestionrutas.prueba;
+        exports visualOFICIAL;
 }

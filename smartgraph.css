@@ -23,7 +23,7 @@ This should help you understand which styles you can apply to each type of eleme
     -fx-stroke-width: 3;
     -fx-stroke: GREY;
     -fx-stroke-type: inside; /* you should keep this if using arrows; it will keep the shape radius consistent. */
-    -fx-fill: YELLOW;
+    -fx-fill: #241616;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0.2, 0, 4);
 }
 
@@ -33,7 +33,7 @@ This should help you understand which styles you can apply to each type of eleme
 }
 
 .vertex-label {
-    -fx-font: bold 8pt "sans-serif";
+    -fx-font: bold 10pt "sans-serif";
     -fx-padding: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0.2, 0, 4);
 }
@@ -59,16 +59,16 @@ This should help you understand which styles you can apply to each type of eleme
 }
 
 .edge-label {
-    -fx-font: normal 5pt "sans-serif";
-    -fx-fill: white;
-    -fx-background-color: red;
+    -fx-font: normal 8pt "sans-serif";
+    -fx-fill: Black;
+    //-fx-background-color: RED;
     -fx-background-radius: 0;
     -fx-border-color: black;
     -fx-padding: 2px;
 }
 
 .edge-label:hover {
-    -fx-font: bold 5pt "sans-serif";
+    -fx-font: bold 8pt "sans-serif";
     -fx-background-radius: 5;
     -fx-border-radius: 5;
 }
@@ -102,4 +102,28 @@ This should help you understand which styles you can apply to each type of eleme
     -fx-stroke: red;
     -fx-opacity: 1;
     -fx-fill: transparent; /* important to keep for curved edges */
+}
+
+.parada-optima {
+    -fx-fill: #759311;
+    -fx-stroke: #2e3c08;
+    -fx-stroke-width: 4;
+}
+
+.ruta-optima {
+    -fx-stroke: #b14b2b;
+    -fx-stroke-width: 4;
+}
+
+.ruta-optima {
+    -fx-stroke: #bc361f;
+    -fx-stroke-width: 5;
+
+    -fx-stroke-dash-array: none;
+
+    -fx-opacity: 1.0;
+}
+
+.arrow {
+    -fx-stroke-dash-array: none;
 }

@@ -26,15 +26,15 @@ public class Dijkstra {
 
             visitados.add(actual);
 
-            for (Ruta r : actual.getRutasSalientes()) {
-                Parada vecino = r.getParadaDestino();
-
-                // NO SE RELAJA UN VECINO QUE YA FUE PROCESADO COMO VISITADO.
-                if (!visitados.contains(vecino)) {
-                    // USA EL PESO DE LA RUTA SEGÚN EL CRITERIO SELECCIONADO.
+            for (Ruta r : grafo.getRutas().values()) {
+                Parada vecino = null;
+                if (r.getParadaOrigen().equals(actual)) {
+                    vecino = r.getParadaDestino();
+                } else if (r.getParadaDestino().equals(actual)) {
+                    vecino = r.getParadaOrigen();
+                }
+                if (vecino != null && !visitados.contains(vecino)) {
                     double nuevaDistancia = distancia.get(actual) + r.getPeso(criterio);
-
-
                     if (nuevaDistancia < distancia.get(vecino)) {
                         distancia.put(vecino, nuevaDistancia);
                         anterior.put(vecino, actual);

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.HelloController">
+    <children>
+        <SplitPane dividerPositions="0.25" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
+                <AnchorPane fx:id="panelIzquierdo" maxWidth="500.0" minHeight="0.0" minWidth="0.0" prefWidth="400.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#abrirCreacionParado" prefHeight="60.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Agregar parada" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+
+                        <Button mnemonicParsing="false" onAction="#abrirCreacionRuta" prefHeight="60.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Agregar ruta" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="100.0" />
+                  <Pane layoutX="23.0" layoutY="217.0" prefHeight="269.0" prefWidth="200.0" style="-fx-background-color: #F0F0F0;">
+                     <children>
+                        <Label layoutX="66.0" layoutY="14.0" text="Calcular ruta" />
+                        <Label layoutX="38.0" layoutY="54.0" text="Origen" />
+                        <Label layoutX="132.0" layoutY="54.0" text="Destino" />
+                        <ComboBox fx:id="cbxOrigen2" layoutX="8.0" layoutY="84.0" prefHeight="25.0" prefWidth="84.0" />
+                        <ComboBox fx:id="cbxDestino2" layoutX="110.0" layoutY="84.0" prefHeight="25.0" prefWidth="84.0" />
+                        <ComboBox fx:id="cbxCriterio" layoutX="32.0" layoutY="159.0" prefHeight="25.0" prefWidth="134.0" />
+                        <Label layoutX="81.0" layoutY="135.0" text="Criterio" />
+                        <Button layoutX="7.0" layoutY="201.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="187.0" text="Calcular" onAction="#buscarMostrarRutaOptima" />
+                     </children>
+                  </Pane>
+                    </children>
+                </AnchorPane>
+
+                <AnchorPane fx:id="panelDerecho" minHeight="0.0" minWidth="0.0" />
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>

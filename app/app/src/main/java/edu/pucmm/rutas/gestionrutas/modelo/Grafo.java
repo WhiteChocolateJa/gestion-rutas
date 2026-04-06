@@ -102,4 +102,15 @@ public class Grafo {
         return paradas.get(id);
     }
 
+    public Ruta obtenerRutaDirecta(Parada p1, Parada p2) {
+        for (Ruta ruta : rutas.values()) {
+            if ((ruta.getParadaOrigen().equals(p1) && ruta.getParadaDestino().equals(p2)) ||
+                    (ruta.getParadaOrigen().equals(p2) && ruta.getParadaDestino().equals(p1))) {
+
+                return ruta;
+            }
+        }
+        return null;
+    }
+
 }

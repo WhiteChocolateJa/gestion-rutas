@@ -66,5 +66,10 @@ public class Ruta {
         throw new IllegalArgumentException("Criterio no válido");
     }
 
+    @Override
+    public String toString() {
+        return id + " (" + tiempoViaje + " min)";
+    }
+
 
 }

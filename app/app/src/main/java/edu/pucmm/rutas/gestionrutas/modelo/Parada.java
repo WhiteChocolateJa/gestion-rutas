@@ -93,9 +93,24 @@ public class Parada {
 
 
 
-    // este metodo define como se muestra un objeto cuando Java intenta convertirlo a texto, para no pasar el objeto sino el texto al combobox
     @Override
     public String toString() {
         return nombre;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Parada otraParada = (Parada) o;
+
+        return this.id != null && this.id.equals(otraParada.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id);
     }
 }
