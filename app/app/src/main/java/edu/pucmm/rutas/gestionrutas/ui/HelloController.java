@@ -7,6 +7,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import edu.pucmm.rutas.gestionrutas.algoritmos.CriterioOptimizacion;
 import edu.pucmm.rutas.gestionrutas.algoritmos.Dijkstra;
 import edu.pucmm.rutas.gestionrutas.control.controlParadas;
+import edu.pucmm.rutas.gestionrutas.control.controlRutas;
 import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
 import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
@@ -14,14 +15,17 @@ import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class HelloController {
 
@@ -93,13 +97,13 @@ public class HelloController {
     @FXML
     public void abrirCreacionRuta() throws IOException {
         FXMLLoader loader = new FXMLLoader(
-                HelloApplication.class.getResource("/visual/crear_paradas.fxml")
+                HelloApplication.class.getResource("/visual/crear_rutas.fxml")
         );
 
         Scene scene = new Scene(loader.load());
         Stage stage = new Stage();
 
-        controlParadas controller = loader.getController();
+        controlRutas controller = loader.getController();
         controller.setHelloController(this);
 
         stage.sizeToScene();
@@ -152,7 +156,10 @@ public class HelloController {
             AnchorPane.setLeftAnchor(panelVisual, 0.0);
             AnchorPane.setRightAnchor(panelVisual, 0.0);
 
-            Platform.runLater(() -> panelVisual.init());
+            Platform.runLater(() -> {
+                panelVisual.init();
+                instalarTooltips();
+            });
         }
 
         if (txtResultadoRuta != null) {
@@ -343,4 +350,42 @@ public class HelloController {
         }
         return false;
     }
+
+    private void instalarTooltips() {
+
+        // TOOLTIP PARA PARADAS
+        for (Parada p : elGrafo.getParadas().values()) {
+            try {
+                String info = "Código: " + p.getId() + "\n" +
+                        "Nombre: " + p.getNombre() + "\n" +
+                        "Zona: " + (p.getZona() != null ? p.getZona() : "N/A") + "\n" +
+                        "Descripción: " + (p.getDescripcion() != null ? p.getDescripcion() : "N/A");
+
+                Tooltip tooltip = new Tooltip(info);
+                tooltip.setShowDelay(Duration.seconds(1)); // 1 segundo
+
+                Tooltip.install((Node) panelVisual.getStylableVertex(p), tooltip);
+
+            } catch (Exception e) {}
+        }
+
+        // TOOLTIP PARA RUTAS
+        for (Ruta r : elGrafo.getRutas().values()) {
+            try {
+                String info = "Origen: " + r.getParadaOrigen().getNombre() + "\n" +
+                        "Destino: " + r.getParadaDestino().getNombre() + "\n" +
+                        "Tiempo: " + r.getTiempoViaje() + "\n" +
+                        "Distancia: " + r.getDistancia() + "\n" +
+                        "Costo: " + r.getCosto() + "\n" +
+                        "Transbordos: " + r.getTransbordos();
+
+                Tooltip tooltip = new Tooltip(info);
+                tooltip.setShowDelay(Duration.seconds(1));
+
+                Tooltip.install((Node) panelVisual.getStylableEdge(r), tooltip);
+
+            } catch (Exception e) {}
+        }
+    }
+
 }

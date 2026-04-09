@@ -74,6 +74,8 @@ public class controlRutas {
             this.helloController.origenDeLaConexion(origen, destino, laRuta);
         }
 
+        rutaCreada = true;
+
         Stage stage = (Stage) txtCodigorRuta.getScene().getWindow();
         stage.close();
     }
@@ -110,7 +112,7 @@ public class controlRutas {
 
         if (paradaOrigen != null) {
             cbxOrigen.setValue(paradaOrigen);
-            cbxOrigen.setDisable(true);
+            cbxOrigen.setDisable(true); // CUALQUIER COSA ESTO SE PONE EN COMENTARIO
         }
     }
 
@@ -120,7 +122,7 @@ public class controlRutas {
         this.paradaOrigen = parada;
         if (cbxOrigen != null) {
             cbxOrigen.setValue(parada);
-            cbxOrigen.setDisable(true);
+            cbxOrigen.setDisable(true); // CUALQUIER COSA ESTO SE PONE EN COMENTARIO
         }
     }
 

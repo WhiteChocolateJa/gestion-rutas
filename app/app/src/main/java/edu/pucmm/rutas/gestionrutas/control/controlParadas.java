@@ -100,7 +100,7 @@ public class controlParadas {
             helloController.refrescarVista();
         }
 
-        if (!grafoActual.getParadas().isEmpty()) {
+        if (grafoActual.getParadas().size() > 1) {
             FXMLLoader loader = new FXMLLoader(
                     HelloApplication.class.getResource("/visual/crear_rutas.fxml")
             );
@@ -114,6 +114,11 @@ public class controlParadas {
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.showAndWait();
+
+            if (!controller.isRutaCreada()) {
+                grafoActual.eliminarParada(nueva.getId());
+                grafoBaseDatos.sincronizar(grafoActual);
+            }
         }
 
         Stage ventanaActual = (Stage) txtCodigo.getScene().getWindow();
