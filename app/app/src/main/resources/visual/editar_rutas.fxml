@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="432.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.control.controlEditarRutas">
+    <children>
+
+        <VBox layoutX="144.0" layoutY="39.0" prefHeight="354.0" prefWidth="346.0" spacing="10.0" AnchorPane.leftAnchor="144.0" AnchorPane.rightAnchor="110.0" AnchorPane.topAnchor="39.0">
+
+            <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Administrar Rutas" />
+
+            <ComboBox fx:id="cbxRutas" onAction="#cargarDatosRuta" prefHeight="26.0" prefWidth="237.0" promptText="Seleccione una ruta" />
+
+            <TextField fx:id="txtCodigoRuta" editable="false" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="118.0" promptText="Código" />
+
+            <ComboBox fx:id="cbxOrigen" prefHeight="26.0" prefWidth="238.0" promptText="Parada origen" />
+            <ComboBox fx:id="cbxDestino" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="240.0" promptText="Parada destino" />
+
+            <Spinner fx:id="spnTiempo" prefHeight="26.0" prefWidth="180.0" />
+            <Spinner fx:id="spnDistancia" prefHeight="26.0" prefWidth="180.0" />
+            <Spinner fx:id="spnCosto" prefHeight="26.0" prefWidth="180.0" />
+            <Spinner fx:id="spnTransbordo" prefHeight="26.0" prefWidth="181.0" />
+
+            <HBox spacing="10">
+                <Button onAction="#modificarRuta" prefWidth="120" text="Modificar" />
+                <Button onAction="#eliminarRuta" prefWidth="120" text="Eliminar" />
+   
+               <Button onAction="#cerrarVentana" prefHeight="26.0" prefWidth="92.0" text="Cerrar" />
+            </HBox>
+
+        </VBox>
+
+    </children>
+</AnchorPane>

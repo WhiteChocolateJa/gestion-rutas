@@ -190,6 +190,38 @@ public class HelloController {
         }
     }
 
+    @FXML
+    public void abrirEditarParadas() throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                HelloApplication.class.getResource("/visual/editar_paradas.fxml")
+        );
+
+        Scene scene = new Scene(loader.load());
+
+        Stage stage = new Stage();
+        stage.sizeToScene();
+        stage.setScene(scene);
+        stage.showAndWait();
+        initialize();
+    }
+
+    @FXML
+    public void abrirEditarRutas() throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(
+                HelloApplication.class.getResource("/visual/editar_rutas.fxml")
+        );
+
+        Scene scene = new Scene(loader.load());
+
+        Stage stage = new Stage();
+        stage.sizeToScene();
+        stage.setScene(scene);
+        stage.showAndWait();
+        initialize();
+    }
+
 
     @FXML
     public void buscarMostrarRutaOptima() {
