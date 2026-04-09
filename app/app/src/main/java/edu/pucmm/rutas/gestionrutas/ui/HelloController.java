@@ -245,13 +245,7 @@ public class HelloController {
                     if (i < camino.size() - 1) rutaTexto.append(" → ");
                 }
 
-                txtResultadoRuta.setText(
-                        "Origen: " + origen.getNombre() + "\n" +
-                                "Destino: " + destino.getNombre() + "\n" +
-                                "Criterio: " + criterio + "\n\n" +
-                                "Costo total: " + total + "\n\n" +
-                                "Ruta:\n" + rutaTexto
-                );
+                txtResultadoRuta.setText("Origen: " + origen.getNombre() + "\n" + "Destino: " + destino.getNombre() + "\n" + "Criterio: " + criterio + "\n\n" + "Costo total: " + total + "\n\n" + "Ruta:\n" + rutaTexto);
             } else {
                 txtResultadoRuta.setText("No se encontró ruta.");
             }
@@ -321,13 +315,7 @@ public class HelloController {
                 int TRANSBORDO = (int) Math.round(Math.sqrt(rutica.getTransbordos()* rutica.getTransbordos() + r.getTransbordos()*r.getTransbordos()));
 
                 Ruta nueva = new Ruta(
-                        "RUT-" + (elgrafito.getRutas().size() + rutasNuevas.size() + 1),
-                        origen,
-                        parada1,
-                        TIEMPO,
-                        DISTANCIA,
-                        COSTO,
-                        TRANSBORDO
+                        "RUT-" + (elgrafito.getRutas().size() + rutasNuevas.size() + 1), origen, parada1, TIEMPO, DISTANCIA, COSTO, TRANSBORDO
                 );
                 origen.agregarRuta(nueva);
                 rutasNuevas.add(nueva);

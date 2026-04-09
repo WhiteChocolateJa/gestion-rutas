@@ -1,0 +1,362 @@
+[1mdiff --git a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlParadas.java b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlParadas.java[m
+[1mindex 19e9121..0136539 100644[m
+[1m--- a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlParadas.java[m
+[1m+++ b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlParadas.java[m
+[36m@@ -3,14 +3,19 @@[m [mpackage edu.pucmm.rutas.gestionrutas.control;[m
+ import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;[m
+ import edu.pucmm.rutas.gestionrutas.modelo.Grafo;[m
+ import edu.pucmm.rutas.gestionrutas.modelo.Parada;[m
+[32m+[m[32mimport edu.pucmm.rutas.gestionrutas.ui.HelloApplication;[m
+ import javafx.event.ActionEvent;[m
+ import javafx.fxml.FXML;[m
+[32m+[m[32mimport javafx.fxml.FXMLLoader;[m
+ import javafx.scene.Node;[m
+[32m+[m[32mimport javafx.scene.Scene;[m
+ import javafx.scene.control.ComboBox;[m
+ import javafx.scene.control.TextArea;[m
+ import javafx.scene.control.TextField;[m
+ import javafx.stage.Stage;[m
+ [m
+[32m+[m[32mimport java.io.IOException;[m
+[32m+[m
+ public class controlParadas {[m
+ [m
+     private static final GrafoRepository grafoBaseDatos = new GrafoRepository();[m
+[36m@@ -63,4 +68,37 @@[m [mpublic class controlParadas {[m
+             cbxDireccion.getItems().setAll(grafoActual.getParadas().values());[m
+         }[m
+     }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m    @FXML[m
+[32m+[m[32m    public void continuarACrearRuta() throws IOException {[m
+[32m+[m
+[32m+[m[32m        Parada nueva = new Parada(txtCodigo.getText(), txtNombre.getText());[m
+[32m+[m[32m        nueva.setZona(txtZona.getText());[m
+[32m+[m[32m        nueva.setDescripcion(txtDescripcion.getText());[m
+[32m+[m
+[32m+[m[32m        // 1. CARGAMOS Y GUARDAMOS LA PARADA PRIMERO[m
+[32m+[m[32m        Grafo grafoActual = grafoBaseDatos.cargarGrafo();[m
+[32m+[m[32m        grafoActual.anadirParada(nueva);[m
+[32m+[m[32m        grafoBaseDatos.sincronizar(grafoActual);[m
+[32m+[m[32m        // Ahora la base de datos ya tiene la parada oficialmente.[m
+[32m+[m
+[32m+[m[32m        if (!grafoActual.getParadas().isEmpty()){[m
+[32m+[m[32m            FXMLLoader loader = new FXMLLoader([m
+[32m+[m[32m                    HelloApplication.class.getResource("/visual/crear_rutas.fxml")[m
+[32m+[m[32m            );[m
+[32m+[m[32m            Scene scene = new Scene(loader.load());[m
+[32m+[m
+[32m+[m[32m            controlRutas controller = loader.getController();[m
+[32m+[m
+[32m+[m[32m            controller.setParadaOrigen(nueva);[m
+[32m+[m
+[32m+[m[32m            Stage stage = new Stage();[m
+[32m+[m[32m            stage.setScene(scene);[m
+[32m+[m[32m            stage.showAndWait();[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        Stage ventanaActual = (Stage) txtCodigo.getScene().getWindow();[m
+[32m+[m[32m        ventanaActual.close();[m
+[32m+[m[32m    }[m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlRutas.java b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlRutas.java[m
+[1mindex b81b312..81a85e9 100644[m
+[1m--- a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlRutas.java[m
+[1m+++ b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/control/controlRutas.java[m
+[36m@@ -4,6 +4,7 @@[m [mimport edu.pucmm.rutas.gestionrutas.database.GrafoRepository;[m
+ import edu.pucmm.rutas.gestionrutas.modelo.Grafo;[m
+ import edu.pucmm.rutas.gestionrutas.modelo.Parada;[m
+ import edu.pucmm.rutas.gestionrutas.modelo.Ruta;[m
+[32m+[m[32mimport edu.pucmm.rutas.gestionrutas.ui.HelloController;[m
+ import javafx.event.ActionEvent;[m
+ import javafx.fxml.FXML;[m
+ import javafx.scene.Node;[m
+[36m@@ -17,6 +18,7 @@[m [mpublic class controlRutas {[m
+ [m
+     private static final GrafoRepository grafoBaseDatos = new GrafoRepository();[m
+     private static Grafo elGrafo = grafoBaseDatos.cargarGrafo();[m
+[32m+[m[32m    private boolean rutaCreada=false;[m
+ [m
+     @FXML[m
+     private TextField txtCodigorRuta;[m
+[36m@@ -68,9 +70,9 @@[m [mpublic class controlRutas {[m
+ [m
+         Ruta laRuta = new Ruta(codigo, origen, destino, tiempo, distancia, costo, trasbordo);[m
+ [m
+[31m-        elGrafo.anadirRuta(laRuta);[m
+[31m-        grafoBaseDatos.sincronizar(elGrafo);[m
+[31m-        elGrafo = grafoBaseDatos.cargarGrafo();[m
+[32m+[m[32m        if (helloController!=null){[m
+[32m+[m[32m            this.helloController.origenDeLaConexion(origen, destino, laRuta);[m
+[32m+[m[32m        }[m
+ [m
+         Stage stage = (Stage) txtCodigorRuta.getScene().getWindow();[m
+         stage.close();[m
+[36m@@ -105,5 +107,31 @@[m [mpublic class controlRutas {[m
+         if (spnTrasbordo != null) {[m
+             spnTrasbordo.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0, 1));[m
+         }[m
+[32m+[m
+[32m+[m[32m        if (paradaOrigen != null) {[m
+[32m+[m[32m            cbxOrigen.setValue(paradaOrigen);[m
+[32m+[m[32m            cbxOrigen.setDisable(true);[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    private Parada paradaOrigen;[m
+[32m+[m
+[32m+[m[32m    public void setParadaOrigen(Parada parada) {[m
+[32m+[m[32m        this.paradaOrigen = parada;[m
+[32m+[m[32m        if (cbxOrigen != null) {[m
+[32m+[m[32m            cbxOrigen.setValue(parada);[m
+[32m+[m[32m            cbxOrigen.setDisable(true);[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public boolean isRutaCreada() {[m
+[32m+[m[32m        return rutaCreada;[m
+     }[m
+[32m+[m
+[32m+[m[32m    private HelloController helloController;[m
+[32m+[m
+[32m+[m[32m    public void setHelloController(HelloController controller) {[m
+[32m+[m[32m        this.helloController = controller;[m
+[32m+[m[32m    }[m
+[32m+[m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/modelo/Parada.java b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/modelo/Parada.java[m
+[1mindex 897f517..e29cc07 100644[m
+[1m--- a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/modelo/Parada.java[m
+[1m+++ b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/modelo/Parada.java[m
+[36m@@ -100,17 +100,15 @@[m [mpublic class Parada {[m
+ [m
+ [m
+     @Override[m
+[31m-    public boolean equals(Object o) {[m
+[31m-        if (this == o) return true;[m
+[31m-        if (o == null || getClass() != o.getClass()) return false;[m
+[31m-[m
+[31m-        Parada otraParada = (Parada) o;[m
+[31m-[m
+[31m-        return this.id != null && this.id.equals(otraParada.id);[m
+[32m+[m[32m    public boolean equals(Object obj) {[m
+[32m+[m[32m        if (this == obj) return true;[m
+[32m+[m[32m        if (obj == null || getClass() != obj.getClass()) return false;[m
+[32m+[m[32m        Parada otra = (Parada) obj;[m
+[32m+[m[32m        return this.getId().equals(otra.getId()); // o usa tu id único[m
+     }[m
+ [m
+     @Override[m
+     public int hashCode() {[m
+[31m-        return java.util.Objects.hash(id);[m
+[32m+[m[32m        return getId().hashCode(); // o tu id único[m
+     }[m
+ }[m
+[1mdiff --git a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/ui/HelloController.java b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/ui/HelloController.java[m
+[1mindex 588161c..64c0c3d 100644[m
+[1m--- a/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/ui/HelloController.java[m
+[1m+++ b/app/app/src/main/java/edu/pucmm/rutas/gestionrutas/ui/HelloController.java[m
+[36m@@ -7,6 +7,7 @@[m [mimport com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;[m
+ import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;[m
+ import edu.pucmm.rutas.gestionrutas.algoritmos.CriterioOptimizacion;[m
+ import edu.pucmm.rutas.gestionrutas.algoritmos.Dijkstra;[m
+[32m+[m[32mimport edu.pucmm.rutas.gestionrutas.control.controlRutas;[m
+ import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;[m
+ import edu.pucmm.rutas.gestionrutas.modelo.Grafo;[m
+ import edu.pucmm.rutas.gestionrutas.modelo.Parada;[m
+[36m@@ -18,13 +19,14 @@[m [mimport javafx.scene.Scene;[m
+ import javafx.scene.control.*;[m
+ import javafx.scene.layout.AnchorPane;[m
+ import javafx.stage.Stage;[m
+[32m+[m
+ import java.io.IOException;[m
+[32m+[m[32mimport java.util.ArrayList;[m
+ import java.util.List;[m
+ [m
+ public class HelloController {[m
+ [m
+[31m-    private static final GrafoRepository grafoBaseDatos= new GrafoRepository();[m
+[31m-    private static Grafo elGrafo = grafoBaseDatos.cargarGrafo();[m
+[32m+[m[32m    private final GrafoRepository grafoBaseDatos = new GrafoRepository();[m
+ [m
+     //CREAR PARADAS[m
+     @FXML[m
+[36m@@ -43,7 +45,7 @@[m [mpublic class HelloController {[m
+     private TextField txtZona;[m
+ [m
+     @FXML[m
+[31m-    private ComboBox <Parada> cbxDireccion;[m
+[32m+[m[32m    private ComboBox<Parada> cbxDireccion;[m
+ [m
+ [m
+     @FXML[m
+[36m@@ -94,6 +96,10 @@[m [mpublic class HelloController {[m
+ [m
+         Scene scene = new Scene(loader.load());[m
+ [m
+[32m+[m[32m        controlRutas controllerRutas = loader.getController();[m
+[32m+[m[32m        controllerRutas.setHelloController(this);[m
+[32m+[m
+[32m+[m
+         Stage stage = new Stage();[m
+         stage.sizeToScene();[m
+         stage.setScene(scene);[m
+[36m@@ -117,7 +123,6 @@[m [mpublic class HelloController {[m
+     public void initialize() {[m
+ [m
+         Grafo miGrafo = grafoBaseDatos.cargarGrafo();[m
+[31m-        elGrafo=miGrafo;[m
+ [m
+         if (cbxCriterio != null) {[m
+             cbxCriterio.getItems().setAll(CriterioOptimizacion.values());[m
+[36m@@ -161,15 +166,17 @@[m [mpublic class HelloController {[m
+     }[m
+ [m
+     public void resaltarRutaEnMapa(List<Parada> camino) {[m
+[31m-        for (Parada p : elGrafo.getParadas().values()) {[m
+[32m+[m[32m        for (Parada p : grafoBaseDatos.cargarGrafo().getParadas().values()) {[m
+             try {[m
+                 panelVisual.getStylableVertex(p).removeStyleClass("parada-optima");[m
+[31m-            } catch (Exception e) {}[m
+[32m+[m[32m            } catch (Exception e) {[m
+[32m+[m[32m            }[m
+         }[m
+[31m-        for (Ruta r : elGrafo.getRutas().values()) {[m
+[32m+[m[32m        for (Ruta r : grafoBaseDatos.cargarGrafo().getRutas().values()) {[m
+             try {[m
+                 panelVisual.getStylableEdge(r).removeStyleClass("ruta-optima");[m
+[31m-            } catch (Exception e) {}[m
+[32m+[m[32m            } catch (Exception e) {[m
+[32m+[m[32m            }[m
+         }[m
+ [m
+         if (camino == null || camino.isEmpty()) return;[m
+[36m@@ -182,7 +189,7 @@[m [mpublic class HelloController {[m
+             Parada p1 = camino.get(i);[m
+             Parada p2 = camino.get(i + 1);[m
+ [m
+[31m-            Ruta tramo = elGrafo.obtenerRutaDirecta(p1, p2);[m
+[32m+[m[32m            Ruta tramo = grafoBaseDatos.cargarGrafo().obtenerRutaDirecta(p1, p2);[m
+ [m
+             if (tramo != null) {[m
+                 panelVisual.getStylableEdge(tramo).addStyleClass("ruta-optima");[m
+[36m@@ -240,8 +247,80 @@[m [mpublic class HelloController {[m
+             }[m
+         }[m
+     }[m
+[31m-}[m
+ [m
+[32m+[m[32m    public void origenDeLaConexion(Parada parada1, Parada parada2, Ruta propuesta) {[m
+[32m+[m[32m        Grafo elgrafo2 =grafoBaseDatos.cargarGrafo();[m
+[32m+[m
+[32m+[m[32m        if (elgrafo2.getParadas().size() == 1) {[m
+[32m+[m[32m            Ruta nueva = new Ruta("RUT-" + (elgrafo2.getRutas().size() + 1), parada1, parada2, propuesta.getTiempoViaje(), propuesta.getDistancia(), propuesta.getCosto(), propuesta.getTransbordos());[m
+[32m+[m[32m            parada1.agregarRuta(nueva);[m
+[32m+[m[32m            elgrafo2.anadirRuta(nueva);[m
+[32m+[m[32m            grafoBaseDatos.sincronizar(elgrafo2);[m
+[32m+[m[32m            elgrafo2=grafoBaseDatos.cargarGrafo();[m
+[32m+[m[32m        }[m
+[32m+[m[32m        else {[m
+[32m+[m[32m            mantenerConexion(parada1, parada2, elgrafo2, propuesta);[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public void mantenerConexion(Parada parada1, Parada parada2, Grafo elgrafito, Ruta rutica) {[m
+[32m+[m
+[32m+[m[32m        parada1.agregarRuta(rutica);[m
+[32m+[m[32m        elgrafito.anadirRuta(rutica);[m
+[32m+[m
+[32m+[m[32m        List<Ruta> rutasNuevas = new ArrayList<>();[m
+ [m
+[32m+[m[32m        for (Ruta r : elgrafito.getRutas().values()) {[m
+[32m+[m[32m            if (r.getParadaOrigen().equals(parada2)) {[m
+ [m
+[32m+[m[32m                Parada destino = r.getParadaDestino();[m
+[32m+[m
+[32m+[m[32m                if (!destino.equals(parada1) && !existeRuta(elgrafito, parada1, destino)) {[m
+[32m+[m[32m                    double TIEMPO = Math.sqrt(rutica.getTiempoViaje()* rutica.getTiempoViaje() + r.getTiempoViaje()*r.getTiempoViaje());[m
+[32m+[m[32m                    double DISTANCIA = Math.sqrt(rutica.getDistancia()* rutica.getDistancia() + r.getDistancia()*r.getDistancia());[m
+[32m+[m[32m                    double COSTO = Math.sqrt(rutica.getCosto()* rutica.getCosto() + r.getCosto()*r.getCosto());[m
+[32m+[m[32m                    int TRANSBORDO = (int) Math.round(Math.sqrt(rutica.getTransbordos()* rutica.getTransbordos() + r.getTransbordos()*r.getTransbordos()));[m
+[32m+[m
+[32m+[m[32m                    Ruta nueva = new Ruta("RUT-" + (elgrafito.getRutas().size() + rutasNuevas.size() + 1), parada1, destino, TIEMPO, DISTANCIA, COSTO, TRANSBORDO);[m
+[32m+[m[32m                    parada1.agregarRuta(nueva);[m
+[32m+[m
+[32m+[m[32m                    rutasNuevas.add(nueva);[m
+[32m+[m[32m                }[m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        for (Ruta r : elgrafito.getRutas().values()) {[m
+[32m+[m[32m            Parada origen = r.getParadaOrigen();[m
+[32m+[m[32m            if (r.getParadaDestino().equals(parada2) && !r.getParadaOrigen().equals(parada1)){[m
+[32m+[m
+[32m+[m[32m                double TIEMPO = Math.sqrt(rutica.getTiempoViaje()* rutica.getTiempoViaje() + r.getTiempoViaje()*r.getTiempoViaje());[m
+[32m+[m[32m                double DISTANCIA = Math.sqrt(rutica.getDistancia()* rutica.getDistancia() + r.getDistancia()*r.getDistancia());[m
+[32m+[m[32m                double COSTO = Math.sqrt(rutica.getCosto()* rutica.getCosto() + r.getCosto()*r.getCosto());[m
+[32m+[m[32m                int TRANSBORDO = (int) Math.round(Math.sqrt(rutica.getTransbordos()* rutica.getTransbordos() + r.getTransbordos()*r.getTransbordos()));[m
+[32m+[m
+[32m+[m[32m                Ruta nueva = new Ruta("RUT-" + (elgrafito.getRutas().size() + rutasNuevas.size() + 1), origen, parada1, TIEMPO, DISTANCIA, COSTO, TRANSBORDO);[m
+[32m+[m[32m                r.getParadaOrigen().agregarRuta(nueva);[m
+[32m+[m
+[32m+[m[32m                rutasNuevas.add(nueva);[m
+[32m+[m[32m                break;[m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+[32m+[m[32m        for (Ruta nuevaRuta : rutasNuevas) {[m
+[32m+[m[32m            elgrafito.anadirRuta(nuevaRuta);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        grafoBaseDatos.sincronizar(elgrafito);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public boolean existeRuta(Grafo grafo, Parada origen, Parada destino) {[m
+[32m+[m
+[32m+[m[32m        for (Ruta r : grafo.getRutas().values()) {[m
+[32m+[m[32m            if (r.getParadaOrigen().equals(origen) &&[m
+[32m+[m[32m                    r.getParadaDestino().equals(destino)) {[m
+[32m+[m[32m                return true;[m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+[32m+[m[32m        return false;[m
+[32m+[m[32m    }[m
+ [m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/app/app/src/main/resources/visual/crear_paradas.fxml b/app/app/src/main/resources/visual/crear_paradas.fxml[m
+[1mindex 8baf309..b65adce 100644[m
+[1m--- a/app/app/src/main/resources/visual/crear_paradas.fxml[m
+[1m+++ b/app/app/src/main/resources/visual/crear_paradas.fxml[m
+[36m@@ -3,22 +3,20 @@[m
+ <?import javafx.scene.control.*?>[m
+ <?import javafx.scene.layout.*?>[m
+ [m
+[31m-<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="354.0" prefWidth="357.0" text="Creación de paradas" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.control.controlParadas">[m
+[32m+[m[32m<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="354.0" prefWidth="513.0" text="Creación de paradas" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.control.controlParadas">[m
+     <content>[m
+[31m-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">[m
+[32m+[m[32m        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="328.0" prefWidth="433.0">[m
+             <children>[m
+                 <TextField fx:id="txtCodigo" disable="true" layoutX="118.0" layoutY="40.0" prefHeight="25.0" prefWidth="201.0" />[m
+                 <Label layoutX="34.0" layoutY="14.0" prefHeight="75.0" prefWidth="67.0" text="CÓDIGO" />[m
+[31m-                <TextField fx:id="txtNombre" layoutX="117.0" layoutY="86.0" prefHeight="25.0" prefWidth="199.0" />[m
+[31m-                <TextArea fx:id="txtDescripcion" layoutX="117.0" layoutY="123.0" prefHeight="67.0" prefWidth="199.0" />[m
+[31m-                <TextField fx:id="txtZona" layoutX="117.0" layoutY="200.0" prefHeight="25.0" prefWidth="201.0" />[m
+[31m-                <ComboBox fx:id="cbxDireccion" layoutX="117.0" layoutY="240.0" prefHeight="25.0" prefWidth="202.0" />[m
+[31m-                <Button layoutX="243.0" layoutY="289.0" mnemonicParsing="false" onAction="#aceptarLaParada" prefHeight="25.0" prefWidth="100.0" text="Aceptar" />[m
+[31m-                <Button layoutX="117.0" layoutY="289.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="25.0" prefWidth="100.0" text="Cancelar" />[m
+[32m+[m[32m                <TextField fx:id="txtNombre" layoutX="117.0" layoutY="86.0" prefHeight="26.0" prefWidth="303.0" />[m
+[32m+[m[32m                <TextArea fx:id="txtDescripcion" layoutX="117.0" layoutY="123.0" prefHeight="67.0" prefWidth="305.0" />[m
+[32m+[m[32m                <TextField fx:id="txtZona" layoutX="117.0" layoutY="200.0" prefHeight="26.0" prefWidth="305.0" />[m
+[32m+[m[32m                <Button layoutX="309.0" layoutY="289.0" mnemonicParsing="false" onAction="#continuarACrearRuta" prefHeight="25.0" prefWidth="100.0" text="Aceptar" />[m
+[32m+[m[32m                <Button layoutX="156.0" layoutY="289.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="25.0" prefWidth="100.0" text="Cancelar" />[m
+                 <Label layoutX="33.0" layoutY="90.0" text="NOMBRE" />[m
+                 <Label layoutX="33.0" layoutY="123.0" text="DESCRIPCIÓN" />[m
+                 <Label layoutX="33.0" layoutY="204.0" text="ZONA" />[m
+[31m-                <Label layoutX="35.0" layoutY="244.0" text="SE DIRIGE A:" />[m
+             </children></AnchorPane>[m
+ [m
+     </content>[m
