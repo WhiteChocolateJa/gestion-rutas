@@ -25,15 +25,16 @@ public class Dijkstra {
         while (actual != null) {
             visitados.add(actual);
 
-            for (Ruta r : actual.getRutasSalientes()) {
-                Parada vecino = r.getParadaDestino();
+            for (Ruta r : grafo.getRutas().values()) {
+                if (r.getParadaOrigen().equals(actual)) {
+                    Parada vecino = r.getParadaDestino();
+                    if (!visitados.contains(vecino)) {
+                        double nuevaDistancia = distancia.get(actual) + r.getPeso(criterio);
 
-                if (!visitados.contains(vecino)) {
-                    double nuevaDistancia = distancia.get(actual) + r.getPeso(criterio);
-
-                    if (nuevaDistancia < distancia.get(vecino)) {
-                        distancia.put(vecino, nuevaDistancia);
-                        anterior.put(vecino, actual);
+                        if (nuevaDistancia < distancia.get(vecino)) {
+                            distancia.put(vecino, nuevaDistancia);
+                            anterior.put(vecino, actual);
+                        }
                     }
                 }
             }

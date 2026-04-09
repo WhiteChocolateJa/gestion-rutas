@@ -184,7 +184,6 @@ public class HelloController {
 
             Ruta tramo = elGrafo.obtenerRutaDirecta(p1, p2);
 
-
             if (tramo != null) {
                 panelVisual.getStylableEdge(tramo).addStyleClass("ruta-optima");
             }
