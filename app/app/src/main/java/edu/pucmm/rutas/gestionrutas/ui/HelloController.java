@@ -45,6 +45,9 @@ public class HelloController {
     @FXML
     private ComboBox <Parada> cbxDireccion;
 
+    @FXML
+    private TextArea txtResultadoRuta;
+
 
     @FXML
     public void abrirCreacionParado() throws IOException {
@@ -59,7 +62,7 @@ public class HelloController {
         stage.sizeToScene();
         stage.setScene(scene);
         stage.showAndWait();
-        initialize();
+        refrescarVista();
     }
 
     //CREAR RUTAS
@@ -98,7 +101,7 @@ public class HelloController {
         stage.sizeToScene();
         stage.setScene(scene);
         stage.showAndWait();
-        initialize();
+        refrescarVista();
     }
 
     @FXML
@@ -115,9 +118,13 @@ public class HelloController {
 
     @FXML
     public void initialize() {
+        refrescarVista();
+    }
+
+    private void refrescarVista() {
 
         Grafo miGrafo = grafoBaseDatos.cargarGrafo();
-        elGrafo=miGrafo;
+        elGrafo = miGrafo;
 
         if (cbxCriterio != null) {
             cbxCriterio.getItems().setAll(CriterioOptimizacion.values());
@@ -136,7 +143,7 @@ public class HelloController {
 
         if (panelDerecho != null) {
             panelDerecho.getChildren().clear();
-            panelDerecho.getChildren().add(panelVisual);
+            panelDerecho.getChildren().add(0, panelVisual);
 
             AnchorPane.setTopAnchor(panelVisual, 0.0);
             AnchorPane.setBottomAnchor(panelVisual, 0.0);
@@ -145,7 +152,12 @@ public class HelloController {
 
             Platform.runLater(() -> panelVisual.init());
         }
+
+        if (txtResultadoRuta != null) {
+            txtResultadoRuta.setText("Seleccione origen, destino y criterio para calcular una ruta.");
+        }
     }
+
 
     private SmartGraphPanel<Parada, Ruta> panelVisual;
 
@@ -203,7 +215,7 @@ public class HelloController {
         stage.sizeToScene();
         stage.setScene(scene);
         stage.showAndWait();
-        initialize();
+        refrescarVista();
     }
 
     @FXML
@@ -219,27 +231,82 @@ public class HelloController {
         stage.sizeToScene();
         stage.setScene(scene);
         stage.showAndWait();
-        initialize();
+        refrescarVista();
     }
+
+    // para el cuadro arriba a la derecha
+    private double calcularCostoTotal(List<Parada> camino, CriterioOptimizacion criterio) {
+        double total = 0;
+
+        for (int i = 0; i < camino.size() - 1; i++) {
+            Parada p1 = camino.get(i);
+            Parada p2 = camino.get(i + 1);
+
+            Ruta r = elGrafo.obtenerRutaDirecta(p1, p2);
+
+            if (r != null) {
+                total += r.getPeso(criterio);
+            }
+        }
+
+        return total;
+    }
+
+
+
+
 
 
     @FXML
     public void buscarMostrarRutaOptima() {
+
         Parada origen = cbxOrigen2.getValue();
         Parada destino = cbxDestino2.getValue();
         CriterioOptimizacion criterio = cbxCriterio.getValue();
 
-        if (origen != null && destino != null) {
-            List<Parada> mejorCamino = encontrarMejor(origen, destino, criterio);
+        if (origen != null && destino != null && criterio != null) {
 
-            if (mejorCamino != null && mejorCamino.size() > 1) {
-                resaltarRutaEnMapa(mejorCamino);
-                System.out.println("Ruta pintada con éxito.");
+            List<Parada> camino = encontrarMejor(origen, destino, criterio);
+
+            if (camino != null && camino.size() > 1) {
+
+                resaltarRutaEnMapa(camino);
+
+                double total = calcularCostoTotal(camino, criterio);
+
+                String rutaTexto = "";
+                for (int i = 0; i < camino.size(); i++) {
+                    rutaTexto += camino.get(i).getNombre();
+                    if (i < camino.size() - 1) {
+                        rutaTexto += " → ";
+                    }
+                }
+
+                txtResultadoRuta.setText(
+                        "Origen: " + origen.getNombre() + "\n" +
+                                "Destino: " + destino.getNombre() + "\n" +
+                                "Criterio: " + criterio + "\n\n" +
+                                "Costo total: " + total + "\n\n" +
+                                "Ruta:\n" + rutaTexto
+                );
+
             } else {
-                System.out.println("No se encontró ningún camino entre esas paradas.");
+                txtResultadoRuta.setText("No se encontró ruta.");
             }
+
+        } else {
+            txtResultadoRuta.setText("Seleccione origen, destino y criterio.");
         }
     }
+
+
+
+
+
+
+
+
+
 }
 
 

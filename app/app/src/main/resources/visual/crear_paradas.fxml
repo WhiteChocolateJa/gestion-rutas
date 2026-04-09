@@ -5,20 +5,18 @@
 
 <TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="354.0" prefWidth="357.0" text="Creación de paradas" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.control.controlParadas">
     <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="285.0" prefWidth="356.0">
             <children>
                 <TextField fx:id="txtCodigo" disable="true" layoutX="118.0" layoutY="40.0" prefHeight="25.0" prefWidth="201.0" />
                 <Label layoutX="34.0" layoutY="14.0" prefHeight="75.0" prefWidth="67.0" text="CÓDIGO" />
                 <TextField fx:id="txtNombre" layoutX="117.0" layoutY="86.0" prefHeight="25.0" prefWidth="199.0" />
                 <TextArea fx:id="txtDescripcion" layoutX="117.0" layoutY="123.0" prefHeight="67.0" prefWidth="199.0" />
                 <TextField fx:id="txtZona" layoutX="117.0" layoutY="200.0" prefHeight="25.0" prefWidth="201.0" />
-                <ComboBox fx:id="cbxDireccion" layoutX="117.0" layoutY="240.0" prefHeight="25.0" prefWidth="202.0" />
-                <Button layoutX="243.0" layoutY="289.0" mnemonicParsing="false" onAction="#aceptarLaParada" prefHeight="25.0" prefWidth="100.0" text="Aceptar" />
-                <Button layoutX="117.0" layoutY="289.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="25.0" prefWidth="100.0" text="Cancelar" />
+                <Button layoutX="228.0" layoutY="243.0" mnemonicParsing="false" onAction="#aceptarLaParada" prefHeight="25.0" prefWidth="100.0" text="Aceptar" />
+                <Button layoutX="117.0" layoutY="243.0" mnemonicParsing="false" onAction="#cerrarVentana" prefHeight="25.0" prefWidth="100.0" text="Cancelar" />
                 <Label layoutX="33.0" layoutY="90.0" text="NOMBRE" />
                 <Label layoutX="33.0" layoutY="123.0" text="DESCRIPCIÓN" />
                 <Label layoutX="33.0" layoutY="204.0" text="ZONA" />
-                <Label layoutX="35.0" layoutY="244.0" text="SE DIRIGE A:" />
             </children></AnchorPane>
 
     </content>

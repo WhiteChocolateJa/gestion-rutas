@@ -68,7 +68,7 @@ public class Ruta {
 
     @Override
     public String toString() {
-        return id + " (" + tiempoViaje + " min)";
+        return id;
     }
 
 
