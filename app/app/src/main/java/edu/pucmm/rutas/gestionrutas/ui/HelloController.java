@@ -6,6 +6,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
 import edu.pucmm.rutas.gestionrutas.algoritmos.CriterioOptimizacion;
 import edu.pucmm.rutas.gestionrutas.algoritmos.Dijkstra;
+import edu.pucmm.rutas.gestionrutas.control.controlParadas;
 import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
 import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
@@ -57,6 +58,10 @@ public class HelloController {
 
         Scene scene = new Scene(loader.load());
         Stage stage = new Stage();
+
+        controlParadas controller = loader.getController();
+        controller.setHelloController(this);
+
         stage.sizeToScene();
         stage.setScene(scene);
         stage.showAndWait();
@@ -88,11 +93,15 @@ public class HelloController {
     @FXML
     public void abrirCreacionRuta() throws IOException {
         FXMLLoader loader = new FXMLLoader(
-                HelloApplication.class.getResource("/visual/crear_rutas.fxml")
+                HelloApplication.class.getResource("/visual/crear_paradas.fxml")
         );
 
         Scene scene = new Scene(loader.load());
         Stage stage = new Stage();
+
+        controlParadas controller = loader.getController();
+        controller.setHelloController(this);
+
         stage.sizeToScene();
         stage.setScene(scene);
         stage.showAndWait();
@@ -116,7 +125,7 @@ public class HelloController {
         refrescarVista();
     }
 
-    private void refrescarVista() {
+    public void refrescarVista() {
         Grafo miGrafo = grafoBaseDatos.cargarGrafo();
         elGrafo = miGrafo;
 
@@ -160,12 +169,12 @@ public class HelloController {
     }
 
     public void resaltarRutaEnMapa(List<Parada> camino) {
-        for (Parada p : elGrafo.getParadas().values()) {
+        for (Parada p : grafoBaseDatos.cargarGrafo().getParadas().values()) {
             try {
                 panelVisual.getStylableVertex(p).removeStyleClass("parada-optima");
             } catch (Exception e) {}
         }
-        for (Ruta r : elGrafo.getRutas().values()) {
+        for (Ruta r : grafoBaseDatos.cargarGrafo().getRutas().values()) {
             try {
                 panelVisual.getStylableEdge(r).removeStyleClass("ruta-optima");
             } catch (Exception e) {}
@@ -245,7 +254,11 @@ public class HelloController {
                     if (i < camino.size() - 1) rutaTexto.append(" → ");
                 }
 
-                txtResultadoRuta.setText("Origen: " + origen.getNombre() + "\n" + "Destino: " + destino.getNombre() + "\n" + "Criterio: " + criterio + "\n\n" + "Costo total: " + total + "\n\n" + "Ruta:\n" + rutaTexto);
+                txtResultadoRuta.setText("Origen: " + origen.getNombre() + "\n" +
+                        "Destino: " + destino.getNombre() + "\n" +
+                        "Criterio: " + criterio + "\n\n" +
+                        "Costo total: " + total + "\n\n" +
+                        "Ruta:\n" + rutaTexto);
             } else {
                 txtResultadoRuta.setText("No se encontró ruta.");
             }
@@ -258,22 +271,41 @@ public class HelloController {
     public void origenDeLaConexion(Parada parada1, Parada parada2, Ruta propuesta) {
         Grafo elgrafo2 = grafoBaseDatos.cargarGrafo();
 
-        if (elgrafo2.getParadas().size() == 1) {
-            Ruta nueva = new Ruta(
-                    "RUT-" + (elgrafo2.getRutas().size() + 1),
-                    parada1,
-                    parada2,
-                    propuesta.getTiempoViaje(),
-                    propuesta.getDistancia(),
-                    propuesta.getCosto(),
-                    propuesta.getTransbordos()
-            );
-            parada1.agregarRuta(nueva);
-            elgrafo2.anadirRuta(nueva);
-            grafoBaseDatos.sincronizar(elgrafo2);
-        } else {
-            mantenerConexion(parada1, parada2, elgrafo2, propuesta);
+        // Agregar la ruta propuesta directamente
+        parada1.agregarRuta(propuesta);
+        elgrafo2.anadirRuta(propuesta);
+
+        // Solo si hay más de una parada, generar combinaciones
+        if (elgrafo2.getParadas().size() > 1) {
+            List<Ruta> rutasNuevas = new ArrayList<>();
+            for (Ruta r : elgrafo2.getRutas().values()) {
+                if (r.getParadaDestino().equals(parada2) && !r.getParadaOrigen().equals(parada1)) {
+                    double TIEMPO = Math.sqrt(propuesta.getTiempoViaje() * propuesta.getTiempoViaje() + r.getTiempoViaje() * r.getTiempoViaje());
+                    double DISTANCIA = Math.sqrt(propuesta.getDistancia() * propuesta.getDistancia() + r.getDistancia() * r.getDistancia());
+                    double COSTO = Math.sqrt(propuesta.getCosto() * propuesta.getCosto() + r.getCosto() * r.getCosto());
+                    int TRANSBORDO = (int) Math.round(Math.sqrt(propuesta.getTransbordos() * propuesta.getTransbordos() + r.getTransbordos() * r.getTransbordos()));
+
+                    Ruta nuevaRuta = new Ruta(
+                            "RUT-" + (elgrafo2.getRutas().size() + rutasNuevas.size() + 1),
+                            r.getParadaOrigen(),
+                            parada1,
+                            TIEMPO,
+                            DISTANCIA,
+                            COSTO,
+                            TRANSBORDO
+                    );
+
+                    r.getParadaOrigen().agregarRuta(nuevaRuta);
+                    rutasNuevas.add(nuevaRuta);
+                }
+            }
+            for (Ruta nuevaRuta : rutasNuevas) {
+                elgrafo2.anadirRuta(nuevaRuta);
+            }
         }
+
+        // Sincronizar grafo final
+        grafoBaseDatos.sincronizar(elgrafo2);
     }
 
     public void mantenerConexion(Parada parada1, Parada parada2, Grafo elgrafito, Ruta rutica) {
@@ -283,59 +315,32 @@ public class HelloController {
         List<Ruta> rutasNuevas = new ArrayList<>();
 
         for (Ruta r : elgrafito.getRutas().values()) {
-            if (r.getParadaOrigen().equals(parada2)) {
-                Parada destino = r.getParadaDestino();
-                if (!destino.equals(parada1) && !existeRuta(elgrafito, parada1, destino)) {
-                    double TIEMPO = Math.sqrt(rutica.getTiempoViaje()* rutica.getTiempoViaje() + r.getTiempoViaje()*r.getTiempoViaje());
-                    double DISTANCIA = Math.sqrt(rutica.getDistancia()* rutica.getDistancia() + r.getDistancia()*r.getDistancia());
-                    double COSTO = Math.sqrt(rutica.getCosto()* rutica.getCosto() + r.getCosto()*r.getCosto());
-                    int TRANSBORDO = (int) Math.round(Math.sqrt(rutica.getTransbordos()* rutica.getTransbordos() + r.getTransbordos()*r.getTransbordos()));
+            if (r.getParadaDestino().equals(parada2) && !r.getParadaOrigen().equals(parada1)) {
+                double TIEMPO = Math.sqrt(rutica.getTiempoViaje() * rutica.getTiempoViaje() + r.getTiempoViaje() * r.getTiempoViaje());
+                double DISTANCIA = Math.sqrt(rutica.getDistancia() * rutica.getDistancia() + r.getDistancia() * r.getDistancia());
+                double COSTO = Math.sqrt(rutica.getCosto() * rutica.getCosto() + r.getCosto() * r.getCosto());
+                int TRANSBORDO = (int) Math.round(Math.sqrt(rutica.getTransbordos() * rutica.getTransbordos() + r.getTransbordos() * r.getTransbordos()));
 
-                    Ruta nueva = new Ruta(
-                            "RUT-" + (elgrafito.getRutas().size() + rutasNuevas.size() + 1),
-                            parada1,
-                            destino,
-                            TIEMPO,
-                            DISTANCIA,
-                            COSTO,
-                            TRANSBORDO
-                    );
-                    parada1.agregarRuta(nueva);
-                    rutasNuevas.add(nueva);
-                }
-            }
-        }
-
-        for (Ruta r : elgrafito.getRutas().values()) {
-            Parada origen = r.getParadaOrigen();
-            if (r.getParadaDestino().equals(parada2) && !origen.equals(parada1)) {
-                double TIEMPO = Math.sqrt(rutica.getTiempoViaje()* rutica.getTiempoViaje() + r.getTiempoViaje()*r.getTiempoViaje());
-                double DISTANCIA = Math.sqrt(rutica.getDistancia()* rutica.getDistancia() + r.getDistancia()*r.getDistancia());
-                double COSTO = Math.sqrt(rutica.getCosto()* rutica.getCosto() + r.getCosto()*r.getCosto());
-                int TRANSBORDO = (int) Math.round(Math.sqrt(rutica.getTransbordos()* rutica.getTransbordos() + r.getTransbordos()*r.getTransbordos()));
-
-                Ruta nueva = new Ruta(
-                        "RUT-" + (elgrafito.getRutas().size() + rutasNuevas.size() + 1), origen, parada1, TIEMPO, DISTANCIA, COSTO, TRANSBORDO
-                );
-                origen.agregarRuta(nueva);
+                Ruta nueva = new Ruta("RUT-" + (elgrafito.getRutas().size() + rutasNuevas.size() + 1), r.getParadaOrigen(), parada1, TIEMPO, DISTANCIA, COSTO, TRANSBORDO);
+                r.getParadaOrigen().agregarRuta(nueva);
                 rutasNuevas.add(nueva);
-                break;
             }
         }
 
         for (Ruta nuevaRuta : rutasNuevas) {
             elgrafito.anadirRuta(nuevaRuta);
         }
+
         grafoBaseDatos.sincronizar(elgrafito);
     }
 
     public boolean existeRuta(Grafo grafo, Parada origen, Parada destino) {
         for (Ruta r : grafo.getRutas().values()) {
-            if (r.getParadaOrigen().equals(origen) && r.getParadaDestino().equals(destino)) {
+            if (r.getParadaOrigen().equals(origen) &&
+                    r.getParadaDestino().equals(destino)) {
                 return true;
             }
         }
         return false;
     }
-
 }

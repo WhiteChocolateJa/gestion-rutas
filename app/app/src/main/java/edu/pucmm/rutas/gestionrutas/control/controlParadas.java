@@ -4,6 +4,7 @@ import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
 import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
 import edu.pucmm.rutas.gestionrutas.ui.HelloApplication;
+import edu.pucmm.rutas.gestionrutas.ui.HelloController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -93,6 +94,12 @@ public class controlParadas {
         grafoActual.anadirParada(nueva);
         grafoBaseDatos.sincronizar(grafoActual);
 
+        Parada paradaEnGrafo = grafoActual.getParadas().get(nueva.getId());
+
+        if (helloController != null) {
+            helloController.refrescarVista();
+        }
+
         if (!grafoActual.getParadas().isEmpty()) {
             FXMLLoader loader = new FXMLLoader(
                     HelloApplication.class.getResource("/visual/crear_rutas.fxml")
@@ -100,7 +107,9 @@ public class controlParadas {
             Scene scene = new Scene(loader.load());
 
             controlRutas controller = loader.getController();
-            controller.setParadaOrigen(nueva);
+            controller.setParadaOrigen(paradaEnGrafo);
+
+            controller.setHelloController(this.helloController);
 
             Stage stage = new Stage();
             stage.setScene(scene);
@@ -110,7 +119,6 @@ public class controlParadas {
         Stage ventanaActual = (Stage) txtCodigo.getScene().getWindow();
         ventanaActual.close();
     }
-
     @FXML
     public void initialize() {
         Grafo grafoActual = grafoBaseDatos.cargarGrafo();
@@ -119,5 +127,11 @@ public class controlParadas {
         if (cbxDireccion != null) {
             cbxDireccion.getItems().setAll(grafoActual.getParadas().values());
         }
+    }
+
+    private HelloController helloController;
+
+    public void setHelloController(HelloController controller) {
+        this.helloController = controller;
     }
 }
