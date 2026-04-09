@@ -4,6 +4,7 @@ import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
 import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
 import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
+import edu.pucmm.rutas.gestionrutas.ui.HelloController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -17,6 +18,7 @@ public class controlRutas {
 
     private static final GrafoRepository grafoBaseDatos = new GrafoRepository();
     private static Grafo elGrafo = grafoBaseDatos.cargarGrafo();
+    private boolean rutaCreada=false;
 
     @FXML
     private TextField txtCodigorRuta;
@@ -68,9 +70,9 @@ public class controlRutas {
 
         Ruta laRuta = new Ruta(codigo, origen, destino, tiempo, distancia, costo, trasbordo);
 
-        elGrafo.anadirRuta(laRuta);
-        grafoBaseDatos.sincronizar(elGrafo);
-        elGrafo = grafoBaseDatos.cargarGrafo();
+        if (helloController!=null){
+            this.helloController.origenDeLaConexion(origen, destino, laRuta);
+        }
 
         Stage stage = (Stage) txtCodigorRuta.getScene().getWindow();
         stage.close();
@@ -105,5 +107,31 @@ public class controlRutas {
         if (spnTrasbordo != null) {
             spnTrasbordo.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0, 1));
         }
+
+        if (paradaOrigen != null) {
+            cbxOrigen.setValue(paradaOrigen);
+            cbxOrigen.setDisable(true);
+        }
     }
+
+    private Parada paradaOrigen;
+
+    public void setParadaOrigen(Parada parada) {
+        this.paradaOrigen = parada;
+        if (cbxOrigen != null) {
+            cbxOrigen.setValue(parada);
+            cbxOrigen.setDisable(true);
+        }
+    }
+
+    public boolean isRutaCreada() {
+        return rutaCreada;
+    }
+
+    private HelloController helloController;
+
+    public void setHelloController(HelloController controller) {
+        this.helloController = controller;
+    }
+
 }

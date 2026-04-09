@@ -100,17 +100,15 @@ public class Parada {
 
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Parada otraParada = (Parada) o;
-
-        return this.id != null && this.id.equals(otraParada.id);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Parada otra = (Parada) obj;
+        return this.getId().equals(otra.getId()); // o usa tu id único
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(id);
+        return getId().hashCode(); // o tu id único
     }
 }
