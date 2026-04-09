@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -44,8 +45,18 @@ public class controlParadas {
 
     @FXML
     public void aceptarLaParada() {
-        String codigo = txtCodigo.getText();
-        String nombre = txtNombre.getText();
+
+        String codigo = txtCodigo.getText().trim();
+        String nombre = txtNombre.getText().trim();
+
+        if (codigo.isEmpty() || nombre.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Debe completar los campos obligatorios: Código y Nombre.");
+            alert.showAndWait();
+            return;
+        }
 
         Parada parada = new Parada(codigo, nombre, 0.0, 0.0);
         parada.setDescripcion(txtDescripcion.getText());
@@ -60,37 +71,35 @@ public class controlParadas {
     }
 
     @FXML
-    public void initialize() {
-        Grafo grafoActual = grafoBaseDatos.cargarGrafo();
-        txtCodigo.setText("PAR-" + (grafoActual.getParadas().size() + 1));
-
-        if (cbxDireccion != null) {
-            cbxDireccion.getItems().setAll(grafoActual.getParadas().values());
-        }
-    }
-
-
-    @FXML
     public void continuarACrearRuta() throws IOException {
 
-        Parada nueva = new Parada(txtCodigo.getText(), txtNombre.getText());
-        nueva.setZona(txtZona.getText());
-        nueva.setDescripcion(txtDescripcion.getText());
+        String codigo = txtCodigo.getText().trim();
+        String nombre = txtNombre.getText().trim();
 
-        // 1. CARGAMOS Y GUARDAMOS LA PARADA PRIMERO
+        if (codigo.isEmpty() || nombre.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Debe completar los campos obligatorios: Código y Nombre.");
+            alert.showAndWait();
+            return;
+        }
+
+        Parada nueva = new Parada(codigo, nombre, 0.0, 0.0);
+        nueva.setDescripcion(txtDescripcion.getText());
+        nueva.setZona(txtZona.getText());
+
         Grafo grafoActual = grafoBaseDatos.cargarGrafo();
         grafoActual.anadirParada(nueva);
         grafoBaseDatos.sincronizar(grafoActual);
-        // Ahora la base de datos ya tiene la parada oficialmente.
 
-        if (!grafoActual.getParadas().isEmpty()){
+        if (!grafoActual.getParadas().isEmpty()) {
             FXMLLoader loader = new FXMLLoader(
                     HelloApplication.class.getResource("/visual/crear_rutas.fxml")
             );
             Scene scene = new Scene(loader.load());
 
             controlRutas controller = loader.getController();
-
             controller.setParadaOrigen(nueva);
 
             Stage stage = new Stage();
@@ -100,5 +109,15 @@ public class controlParadas {
 
         Stage ventanaActual = (Stage) txtCodigo.getScene().getWindow();
         ventanaActual.close();
+    }
+
+    @FXML
+    public void initialize() {
+        Grafo grafoActual = grafoBaseDatos.cargarGrafo();
+        txtCodigo.setText("PAR-" + (grafoActual.getParadas().size() + 1));
+
+        if (cbxDireccion != null) {
+            cbxDireccion.getItems().setAll(grafoActual.getParadas().values());
+        }
     }
 }
