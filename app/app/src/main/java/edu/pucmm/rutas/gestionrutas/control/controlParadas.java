@@ -1,4 +1,4 @@
-package edu.pucmm.rutas.gestionrutas;
+package edu.pucmm.rutas.gestionrutas.control;
 
 import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
 import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
@@ -6,7 +6,6 @@ import edu.pucmm.rutas.gestionrutas.modelo.Parada;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -17,13 +16,20 @@ public class controlParadas {
     private static final GrafoRepository grafoBaseDatos = new GrafoRepository();
     private static Grafo elGrafo = grafoBaseDatos.cargarGrafo();
 
-    @FXML private Button cancelar;
     @FXML
-    TextField txtCodigo;
-    @FXML private TextField txtNombre;
-    @FXML private TextArea txtDescripcion;
-    @FXML private TextField txtZona;
-    @FXML private ComboBox<Parada> cbxDireccion;
+    private TextField txtCodigo;
+
+    @FXML
+    private TextField txtNombre;
+
+    @FXML
+    private TextArea txtDescripcion;
+
+    @FXML
+    private TextField txtZona;
+
+    @FXML
+    private ComboBox<Parada> cbxDireccion;
 
     @FXML
     public void cerrarVentana(ActionEvent event) {
@@ -50,9 +56,11 @@ public class controlParadas {
 
     @FXML
     public void initialize() {
-        txtCodigo.setText("PAR-"+(grafoBaseDatos.cargarGrafo().getParadas().size()+1));
+        Grafo grafoActual = grafoBaseDatos.cargarGrafo();
+        txtCodigo.setText("PAR-" + (grafoActual.getParadas().size() + 1));
+
         if (cbxDireccion != null) {
-            cbxDireccion.getItems().setAll(elGrafo.getParadas().values());
+            cbxDireccion.getItems().setAll(grafoActual.getParadas().values());
         }
     }
 }

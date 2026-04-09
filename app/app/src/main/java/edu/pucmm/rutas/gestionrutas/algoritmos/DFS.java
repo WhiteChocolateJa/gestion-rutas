@@ -1,10 +1,12 @@
 /*
-* DFS = Depth-First Search, busqueda de profundidad
-*
-* Mientras que BFS va por niveles, DFS va lo mas profundo primero.
-* DFS es basicamente, me voy por un camino hasta que no pueda mas
-* */
-
+ * DFS (Depth-First Search)
+ *
+ * Este algoritmo se utiliza para determinar si existe al menos un camino
+ * entre dos paradas dentro del grafo.
+ *
+ * Explora el grafo en profundidad, avanzando por un camino hasta que no
+ * puede continuar, y luego retrocede.
+ */
 package edu.pucmm.rutas.gestionrutas.algoritmos;
 
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;

@@ -1,4 +1,4 @@
-package edu.pucmm.rutas.gestionrutas;
+package edu.pucmm.rutas.gestionrutas.control;
 
 import edu.pucmm.rutas.gestionrutas.database.GrafoRepository;
 import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
@@ -15,11 +15,11 @@ import javafx.stage.Stage;
 
 public class controlRutas {
 
-    private static final GrafoRepository grafoBaseDatos= new GrafoRepository();
+    private static final GrafoRepository grafoBaseDatos = new GrafoRepository();
     private static Grafo elGrafo = grafoBaseDatos.cargarGrafo();
 
     @FXML
-    TextField txtCodigorRuta;
+    private TextField txtCodigorRuta;
 
     @FXML
     private ComboBox<Parada> cbxOrigen;
@@ -49,13 +49,22 @@ public class controlRutas {
     public void aceptarRuta() {
         Parada origen = cbxOrigen.getValue();
         Parada destino = cbxDestino.getValue();
+
+        if (origen == null || destino == null) {
+            System.out.println("Debe seleccionar origen y destino.");
+            return;
+        }
+
+        if (origen.equals(destino)) {
+            System.out.println("El origen y el destino no pueden ser iguales.");
+            return;
+        }
+
         String codigo = txtCodigorRuta.getText();
         Double tiempo = spnTiempo.getValue();
         Double distancia = spnDistancia.getValue();
         Double costo = spnCosto.getValue();
         Integer trasbordo = spnTrasbordo.getValue();
-
-        System.out.println("Entró a aceptarRuta");
 
         Ruta laRuta = new Ruta(codigo, origen, destino, tiempo, distancia, costo, trasbordo);
 
@@ -65,24 +74,22 @@ public class controlRutas {
 
         Stage stage = (Stage) txtCodigorRuta.getScene().getWindow();
         stage.close();
-
     }
 
     @FXML
     public void initialize() {
+        Grafo grafoActual = grafoBaseDatos.cargarGrafo();
 
-        txtCodigorRuta.setText("RUT-"+ (grafoBaseDatos.cargarGrafo().getRutas().size()+1));
+        txtCodigorRuta.setText("RUT-" + (grafoActual.getRutas().size() + 1));
 
-        // 1. Llenar los ComboBox con las paradas existentes en el grafo
         if (cbxOrigen != null) {
-            cbxOrigen.getItems().setAll(elGrafo.getParadas().values());
+            cbxOrigen.getItems().setAll(grafoActual.getParadas().values());
         }
 
         if (cbxDestino != null) {
-            cbxDestino.getItems().setAll(elGrafo.getParadas().values());
+            cbxDestino.getItems().setAll(grafoActual.getParadas().values());
         }
 
-        // 2. Configurar los límites y valores por defecto de los Spinners
         if (spnTiempo != null) {
             spnTiempo.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, 0, 1));
         }
@@ -98,6 +105,5 @@ public class controlRutas {
         if (spnTrasbordo != null) {
             spnTrasbordo.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0, 1));
         }
-
     }
 }

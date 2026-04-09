@@ -24,6 +24,10 @@ public class FloydWarshall {
     // según el criterio de optimización seleccionado
     public double[][] calcular(Grafo grafo, CriterioOptimizacion criterio) {
 
+        if (grafo == null) {
+            return new double[0][0];
+        }
+
         // Convierte las paradas del grafo en una lista indexada
         // para poder trabajar con filas y columnas en la matriz
         List<Parada> listaParadas = new ArrayList<>(grafo.getParadas().values());
@@ -62,8 +66,8 @@ public class FloydWarshall {
             int i = indices.get(ruta.getParadaOrigen());
             int j = indices.get(ruta.getParadaDestino());
 
-            // Guarda el costo directo entre esas dos paradas
-            distan[i][j] = ruta.getPeso(criterio);
+            // Guarda el menor costo directo entre esas dos paradas
+            distan[i][j] = Math.min(distan[i][j], ruta.getPeso(criterio));
         }
 
         // Aplicación de Floyd-Warshall

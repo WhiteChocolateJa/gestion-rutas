@@ -1,41 +1,3 @@
-// el algoritmo bfs para este sistema es para implementar una opcion que diga "Encontrar una ruta mas directa"
-//esto significa la ruta con menos paradas intermedias, o sea el camino con menos saltos.
-
-/*
-Qué es BFS
-BFS significa:
-
-Breadth-First Search
-o en español: búsqueda en anchura
-
-Es un algoritmo que recorre un grafo por niveles.
-
-Idea simple
-
-Si empiezas en una parada A, BFS hace esto:
-	•	primero visita las paradas directamente conectadas con A
-	•	luego las conectadas con esas
-	•	luego las siguientes
-	•	y así sucesivamente
-
-O sea, va avanzando “capa por capa”.
-
-Cómo se ve mentalmente
-
-Supón este grafo:
-	•	A -> B
-	•	A -> C
-	•	B -> D
-	•	C -> E
-
-Si empiezas en A, BFS visita en este orden:
-	•	A
-	•	B, C
-	•	D, E
-
-Primero los vecinos cercanos, luego los más lejanos.
-* */
-
 package edu.pucmm.rutas.gestionrutas.algoritmos;
 
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
@@ -43,12 +5,26 @@ import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
 
 import java.util.*;
 
+/*
+ * BFS (Breadth-First Search)
+ *
+ * Este algoritmo se utiliza para encontrar la ruta más directa entre
+ * dos paradas, es decir, el camino con menor cantidad de saltos.
+ *
+ * Recorre el grafo por niveles usando una cola, evita repetir nodos
+ * con un conjunto de visitados y reconstruye el camino con ayuda
+ * de un mapa de nodos anteriores.
+ */
 public class BFS {
 
     public List<Parada> buscarCamino(Parada origen, Parada destino) {
-        Queue<Parada> cola = new LinkedList<>(); // estructura de datos fifo. Esto tiene dos metodos: poll-> que saca y devuelve el primer elemento, lo saca de la cola y lo devuelve. peek solo mira el primer elemento, lo devuelve pero no lo elimina
-        Set<Parada> visitados = new HashSet<>(); // esto es para marcar que ya lo visitamos y no volverlo a hacer
-        Map<Parada, Parada> anterior = new HashMap<>(); // reconstruye el camino hasta el final
+        if (origen == null || destino == null) {
+            return new ArrayList<>();
+        }
+
+        Queue<Parada> cola = new LinkedList<>();
+        Set<Parada> visitados = new HashSet<>();
+        Map<Parada, Parada> anterior = new HashMap<>();
 
         cola.add(origen);
         visitados.add(origen);
@@ -64,14 +40,14 @@ public class BFS {
                 Parada vecino = ruta.getParadaDestino();
 
                 if (!visitados.contains(vecino)) {
-                    visitados.add(vecino); // ya pase por aqui
-                    anterior.put(vecino, actual); // llegue hasta vecino desde actual
-                    cola.add(vecino); // despues me tocara procesarlo
+                    visitados.add(vecino);
+                    anterior.put(vecino, actual);
+                    cola.add(vecino);
                 }
             }
         }
 
-        if (!visitados.contains(destino)) { // si el destino nunca fue visitado, no existe camino.
+        if (!visitados.contains(destino)) {
             return new ArrayList<>();
         }
 
@@ -84,9 +60,5 @@ public class BFS {
         }
 
         return camino;
-
-
     }
-
-
 }

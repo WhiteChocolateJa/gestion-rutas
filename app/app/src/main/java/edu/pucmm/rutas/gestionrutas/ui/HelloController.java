@@ -1,4 +1,4 @@
-package edu.pucmm.rutas.gestionrutas;
+package edu.pucmm.rutas.gestionrutas.ui;
 
 
 import com.brunomnsilva.smartgraph.graph.Digraph;
@@ -18,8 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import visualOFICIAL.traductorLibreria;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -131,7 +129,7 @@ public class HelloController {
             cbxDestino2.getItems().setAll(miGrafo.getParadas().values());
         }
 
-        Digraph<Parada, Ruta> grafoListo = traductorLibreria.convertirGrafo(miGrafo);
+        Digraph<Parada, Ruta> grafoListo = TraductorLibreria.convertirGrafo(miGrafo);
 
         SmartPlacementStrategy estrategia = new SmartCircularSortedPlacementStrategy();
         panelVisual = new SmartGraphPanel<>(grafoListo, estrategia);

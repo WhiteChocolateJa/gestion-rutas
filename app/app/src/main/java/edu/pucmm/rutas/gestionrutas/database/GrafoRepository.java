@@ -16,18 +16,16 @@ public class GrafoRepository {
         this.rutaDAO = new RutaDAO();
     }
 
-    // CARGA EL GRAFO COMPLETO DESDE LA BASE DE DATOS
-    // PRIMERO CARGA LAS PARADAS Y LUEGO LAS RUTAS
+    // Carga el grafo completo desde la base de datos.
+    // Primero se cargan las paradas y luego las rutas.
     public Grafo cargarGrafo() {
         Grafo grafo = new Grafo();
 
-        // CARGAR PARADAS
         List<Parada> paradas = paradaDAO.obtenerTodas();
         for (Parada parada : paradas) {
             grafo.anadirParada(parada);
         }
 
-        // CARGAR RUTAS
         List<Ruta> rutas = rutaDAO.obtenerTodas();
         for (Ruta ruta : rutas) {
             grafo.anadirRuta(ruta);
@@ -36,28 +34,25 @@ public class GrafoRepository {
         return grafo;
     }
 
-    // SINCRONIZA EL GRAFO ACTUAL CON LA BASE DE DATOS
-    // ESTA VERSION BORRA TODO Y VUELVE A INSERTAR
+    // Sincroniza el grafo actual con la base de datos.
+    // Esta versión elimina todos los registros existentes
+    // y luego vuelve a insertar el contenido actual del grafo.
     public void sincronizar(Grafo grafo) {
 
-        // ELIMINAR TODAS LAS RUTAS
         List<Ruta> rutasExistentes = rutaDAO.obtenerTodas();
         for (Ruta ruta : rutasExistentes) {
             rutaDAO.eliminar(ruta.getId());
         }
 
-        // ELIMINAR TODAS LAS PARADAS
         List<Parada> paradasExistentes = paradaDAO.obtenerTodas();
         for (Parada parada : paradasExistentes) {
             paradaDAO.eliminar(parada.getId());
         }
 
-        // GUARDAR PARADAS DEL GRAFO ACTUAL
         for (Parada parada : grafo.getParadas().values()) {
             paradaDAO.guardar(parada);
         }
 
-        // GUARDAR RUTAS DEL GRAFO ACTUAL
         for (Ruta ruta : grafo.getRutas().values()) {
             rutaDAO.guardar(ruta);
         }

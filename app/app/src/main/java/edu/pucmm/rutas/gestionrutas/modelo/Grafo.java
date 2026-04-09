@@ -9,7 +9,7 @@ public class Grafo {
     // MAPA PRINCIPAL DEL GRAFO.
     // GUARDA CADA PARADA POR SU ID PARA ACCESO RÁPIDO.
     private Map<String, Parada> paradas;
-    private Map <String, Ruta> rutas;
+    private Map<String, Ruta> rutas;
 
     public Map<String, Parada> getParadas() {
         return paradas;
@@ -25,26 +25,24 @@ public class Grafo {
     }
 
     // AGREGA UNA PARADA AL GRAFO SOLO SI SU ID NO EXISTE YA.
-    // ESTO EVITA DUPLICADOS BÁSICOS EN LA ESTRUCTURA.
     public void anadirParada(Parada paradaAgregar) {
-        if(!this.paradas.containsKey(paradaAgregar.getId())) {
+        if (!this.paradas.containsKey(paradaAgregar.getId())) {
             this.paradas.put(paradaAgregar.getId(), paradaAgregar);
         }
     }
 
     // AGREGA UNA RUTA SOLO SI LA PARADA ORIGEN Y DESTINO EXISTEN EN EL GRAFO.
-    // POR AHORA NO SE VALIDA DUPLICADO CON contains() PARA EVITAR DEPENDER DE equals() EN Ruta.
     public void anadirRuta(Ruta ruta) {
         Parada origen = ruta.getParadaOrigen();
         Parada destino = ruta.getParadaDestino();
+
         if (paradas.containsKey(origen.getId()) && paradas.containsKey(destino.getId())) {
             origen.agregarRuta(ruta);
             rutas.put(ruta.getId(), ruta);
         }
     }
 
-    // MODIFICA UNA RUTA BUSCÁNDOLA DENTRO DE LAS RUTAS SALIENTES DE SU ORIGEN.
-    // SE COMPARA POR EL ID DEL DESTINO PARA NO DEPENDER DE equals() EN Ruta.
+    // MODIFICA UNA RUTA EXISTENTE.
     public void modificarRuta(Ruta rutaActualizada) {
         Parada origen = rutaActualizada.getParadaOrigen();
         List<Ruta> rutas2 = origen.getRutasSalientes();
@@ -60,25 +58,26 @@ public class Grafo {
         }
     }
 
-    // MODIFICA LOS DATOS DE UNA PARADA REEMPLAZÁNDOLA EN EL MAPA SEGÚN SU ID.
+    // MODIFICA LOS DATOS DE UNA PARADA.
     public void modificarParada(Parada parada) {
         this.paradas.put(parada.getId(), parada);
-        for (Ruta r : parada.getRutasSalientes()){
+        for (Ruta r : parada.getRutasSalientes()) {
             rutas.put(r.getId(), r);
         }
     }
 
-    // ELIMINA UNA RUTA DE LA LISTA DE RUTAS SALIENTES DE SU PARADA ORIGEN.
+    // ELIMINA UNA RUTA DEL GRAFO.
     public void eliminarRuta(Ruta ruta) {
         ruta.getParadaOrigen().eliminarRuta(ruta);
         rutas.remove(ruta.getId());
     }
 
-    // ELIMINA UNA PARADA DEL GRAFO.
-    // ANTES DE BORRARLA, TAMBIÉN ELIMINA TODAS LAS RUTAS DE OTRAS PARADAS
-    // QUE APUNTEN HACIA ESA PARADA PARA EVITAR REFERENCIAS INVÁLIDAS.
+    // ELIMINA UNA PARADA Y TODAS SUS RUTAS RELACIONADAS.
     public void eliminarParada(String idParada) {
-        for (Ruta r : paradas.get(idParada).getRutasSalientes()){
+        Parada parada = paradas.get(idParada);
+        if (parada == null) return;
+
+        for (Ruta r : parada.getRutasSalientes()) {
             rutas.remove(r.getId());
         }
 
@@ -92,25 +91,22 @@ public class Grafo {
                 }
             }
         }
+
         paradas.remove(idParada);
     }
 
-
     // DEVUELVE LA PARADA ASOCIADA AL ID INDICADO.
-    // SIRVE PARA BUSCAR PARADAS RÁPIDAMENTE DESDE EL GRAFO.
     public Parada obtenerParada(String id) {
         return paradas.get(id);
     }
 
+    // DEVUELVE LA RUTA DIRECTA EN EL SENTIDO p1 -> p2.
     public Ruta obtenerRutaDirecta(Parada p1, Parada p2) {
         for (Ruta ruta : rutas.values()) {
-            if ((ruta.getParadaOrigen().equals(p1) && ruta.getParadaDestino().equals(p2)) ||
-                    (ruta.getParadaOrigen().equals(p2) && ruta.getParadaDestino().equals(p1))) {
-
+            if (ruta.getParadaOrigen().equals(p1) && ruta.getParadaDestino().equals(p2)) {
                 return ruta;
             }
         }
         return null;
     }
-
 }
