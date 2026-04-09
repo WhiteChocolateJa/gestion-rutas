@@ -1,53 +1,47 @@
 package edu.pucmm.rutas.gestionrutas.algoritmos;
 
+import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
 import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
 
 import java.util.*;
 
-/*
- * BFS (Breadth-First Search)
- *
- * Este algoritmo se utiliza para encontrar la ruta más directa entre
- * dos paradas, es decir, el camino con menor cantidad de saltos.
- *
- * Recorre el grafo por niveles usando una cola, evita repetir nodos
- * con un conjunto de visitados y reconstruye el camino con ayuda
- * de un mapa de nodos anteriores.
- */
 public class BFS {
 
-    public List<Parada> buscarCamino(Parada origen, Parada destino) {
-        if (origen == null || destino == null) {
+    public List<Parada> buscarCamino(Parada origen, Parada destino, Grafo grafo) {
+        if (origen == null || destino == null || grafo == null) {
             return new ArrayList<>();
         }
 
         Queue<Parada> cola = new LinkedList<>();
-        Set<Parada> visitados = new HashSet<>();
-        Map<Parada, Parada> anterior = new HashMap<>();
+        Set<String> visitados = new HashSet<>();
+        Map<String, Parada> anterior = new HashMap<>();
 
         cola.add(origen);
-        visitados.add(origen);
+        visitados.add(origen.getId());
 
         while (!cola.isEmpty()) {
             Parada actual = cola.poll();
 
-            if (actual.equals(destino)) {
+            if (actual.getId().equals(destino.getId())) {
                 break;
             }
 
-            for (Ruta ruta : actual.getRutasSalientes()) {
-                Parada vecino = ruta.getParadaDestino();
+            for (Ruta ruta : grafo.getRutas().values()) {
+                if (ruta.getParadaOrigen().getId().equals(actual.getId())) {
 
-                if (!visitados.contains(vecino)) {
-                    visitados.add(vecino);
-                    anterior.put(vecino, actual);
-                    cola.add(vecino);
+                    Parada vecino = ruta.getParadaDestino();
+
+                    if (!visitados.contains(vecino.getId())) {
+                        visitados.add(vecino.getId());
+                        anterior.put(vecino.getId(), actual);
+                        cola.add(vecino);
+                    }
                 }
             }
         }
 
-        if (!visitados.contains(destino)) {
+        if (!visitados.contains(destino.getId())) {
             return new ArrayList<>();
         }
 
@@ -56,7 +50,7 @@ public class BFS {
 
         while (paso != null) {
             camino.add(0, paso);
-            paso = anterior.get(paso);
+            paso = anterior.get(paso.getId());
         }
 
         return camino;

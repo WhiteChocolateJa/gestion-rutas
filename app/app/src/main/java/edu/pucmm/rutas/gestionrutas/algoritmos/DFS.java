@@ -1,44 +1,52 @@
-/*
- * DFS (Depth-First Search)
- *
- * Este algoritmo se utiliza para determinar si existe al menos un camino
- * entre dos paradas dentro del grafo.
- *
- * Explora el grafo en profundidad, avanzando por un camino hasta que no
- * puede continuar, y luego retrocede.
- */
 package edu.pucmm.rutas.gestionrutas.algoritmos;
 
+import edu.pucmm.rutas.gestionrutas.modelo.Grafo;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
 import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class DFS {
+    public List<Parada> buscarCamino(Parada origen, Parada destino, Grafo grafo) {
+        List<Parada> camino = new ArrayList<>();
+        Set<String> visitados = new HashSet<>();
 
-    public boolean existeCamino(Parada origen, Parada destino) {
-        Set<Parada> visitados = new HashSet<>();
-        return dfs(origen, destino, visitados);       // esto es para meterse profundo en el grafo
+        if (origen == null || destino == null || grafo == null) {
+            return camino;
+        }
+
+        if (dfsRecursivo(origen, destino, visitados, camino, grafo)) {
+            return camino;
+        }
+
+        return new ArrayList<>();
     }
-    private boolean dfs(Parada actual, Parada destino, Set<Parada> visitados) {
-        if (actual.equals(destino)) { // caso base, si ya llegaste termina.
+
+    private boolean dfsRecursivo(Parada actual, Parada destino, Set<String> visitados, List<Parada> camino, Grafo grafo) {
+        visitados.add(actual.getId());
+        camino.add(actual);
+
+        if (actual.getId().equals(destino.getId())) {
             return true;
         }
-        visitados.add(actual); // marcar visitados, para evitar ciclos
-        for (Ruta ruta : actual.getRutasSalientes()){ // mira todas las rutas desde esa parada
-            Parada vecino = ruta.getParadaDestino();
 
-            if (!visitados.contains(vecino)) {
-                if (dfs(vecino, destino, visitados)) { // si un camino sirve ya terminamos
-                    return true;
+        for (Ruta ruta : grafo.getRutas().values()) {
+            if (ruta.getParadaOrigen().getId().equals(actual.getId())) {
+
+                Parada vecino = ruta.getParadaDestino();
+
+                if (!visitados.contains(vecino.getId())) {
+                    if (dfsRecursivo(vecino, destino, visitados, camino, grafo)) {
+                        return true;
+                    }
                 }
             }
         }
 
-        return false; // no hay camino
+        camino.remove(camino.size() - 1);
+        return false;
     }
-
-
-
 }

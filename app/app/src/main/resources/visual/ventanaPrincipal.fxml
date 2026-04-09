@@ -3,120 +3,57 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0"
-            stylesheets="@styles.css"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.pucmm.rutas.gestionrutas.ui.HelloController">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.ui.HelloController">
 
     <children>
-        <SplitPane dividerPositions="0"
-                   AnchorPane.topAnchor="0.0"
-                   AnchorPane.bottomAnchor="0.0"
-                   AnchorPane.leftAnchor="0.0"
-                   AnchorPane.rightAnchor="0.0">
+        <SplitPane dividerPositions="0.26" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
 
-                <AnchorPane fx:id="panelIzquierdo"
-                            prefWidth="260.0"
-                            minWidth="0.0"
-                            minHeight="0.0">
+                <AnchorPane fx:id="panelIzquierdo" minHeight="0.0" minWidth="0.0" prefWidth="260.0" maxWidth="260.0" SplitPane.resizableWithParent="false">                    <children>
+                        <Button layoutX="20.0" layoutY="20.0" onAction="#abrirCreacionParado" prefHeight="35.0" prefWidth="200.0" styleClass="button-main-primary" text="Agregar parada" />
 
-                    <children>
+                        <Button layoutX="20.0" layoutY="65.0" onAction="#abrirCreacionRuta" prefHeight="35.0" prefWidth="200.0" styleClass="button-main-primary" text="Agregar ruta" />
 
-                        <Button text="Agregar parada"
-                                layoutX="20.0" layoutY="20.0"
-                                prefWidth="200.0" prefHeight="35.0"
-                                styleClass="button-main-primary"
-                                onAction="#abrirCreacionParado"/>
+                        <Button layoutX="20.0" layoutY="110.0" onAction="#abrirEditarParadas" prefHeight="30.0" prefWidth="200.0" styleClass="button-main-secondary" text="Editar paradas" />
 
-                        <Button text="Agregar ruta"
-                                layoutX="20.0" layoutY="65.0"
-                                prefWidth="200.0" prefHeight="35.0"
-                                styleClass="button-main-primary"
-                                onAction="#abrirCreacionRuta"/>
+                        <Button layoutX="20.0" layoutY="150.0" onAction="#abrirEditarRutas" prefHeight="30.0" prefWidth="200.0" styleClass="button-main-secondary" text="Editar rutas" />
 
-                        <Button text="Editar paradas"
-                                layoutX="20.0" layoutY="110.0"
-                                prefWidth="200.0" prefHeight="30.0"
-                                styleClass="button-main-secondary"
-                                onAction="#abrirEditarParadas"/>
-
-                        <Button text="Editar rutas"
-                                layoutX="20.0" layoutY="150.0"
-                                prefWidth="200.0" prefHeight="30.0"
-                                styleClass="button-main-secondary"
-                                onAction="#abrirEditarRutas"/>
-
-                        <Pane layoutX="20.0" layoutY="220.0"
-                              prefWidth="220.0" prefHeight="220.0"
-                              styleClass="panel-calcular">
+                        <Pane layoutX="20.0" layoutY="220.0" prefHeight="220.0" prefWidth="220.0" styleClass="panel-calcular">
                             <children>
+                                <Label layoutX="65.0" layoutY="15.0" style="-fx-font-weight: bold; -fx-font-size: 13px;" text="Calcular ruta" />
 
-                                <Label text="Calcular ruta"
-                                       layoutX="65.0" layoutY="15.0"
-                                       style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                                <Label layoutX="20.0" layoutY="50.0" text="Origen" />
+                                <ComboBox fx:id="cbxOrigen2" layoutX="20.0" layoutY="70.0" prefWidth="80.0" />
 
-                                <Label text="Origen"
-                                       layoutX="20.0" layoutY="50.0"/>
-                                <ComboBox fx:id="cbxOrigen2"
-                                          layoutX="20.0" layoutY="70.0"
-                                          prefWidth="80.0"/>
+                                <Label layoutX="120.0" layoutY="50.0" text="Destino" />
+                                <ComboBox fx:id="cbxDestino2" layoutX="120.0" layoutY="70.0" prefWidth="80.0" />
 
-                                <Label text="Destino"
-                                       layoutX="120.0" layoutY="50.0"/>
-                                <ComboBox fx:id="cbxDestino2"
-                                          layoutX="120.0" layoutY="70.0"
-                                          prefWidth="80.0"/>
+                                <Label layoutX="75.0" layoutY="110.0" text="Criterio" />
+                                <ComboBox fx:id="cbxCriterio" layoutX="40.0" layoutY="130.0" prefWidth="140.0" />
 
-                                <Label text="Criterio"
-                                       layoutX="75.0" layoutY="110.0"/>
-                                <ComboBox fx:id="cbxCriterio"
-                                          layoutX="40.0" layoutY="130.0"
-                                          prefWidth="140.0"/>
-
-                                <Button text="Calcular"
-                                        layoutX="20.0" layoutY="175.0"
-                                        prefWidth="180.0" prefHeight="35.0"
-                                        styleClass="button-primary"
-                                        onAction="#buscarMostrarRutaOptima"/>
+                                <Button layoutX="20.0" layoutY="175.0" onAction="#buscarMostrarRutaOptima" prefHeight="35.0" prefWidth="180.0" styleClass="button-primary" text="Calcular" />
                             </children>
                         </Pane>
 
+                        <CheckBox fx:id="cbxOpcAv" layoutX="25.0" layoutY="460.0" mnemonicParsing="false" text="Opciones avanzadas" />
+                        <Label layoutX="25.0" layoutY="495.0" text="Seleccione algoritmo deseado:" />
+                        <ComboBox fx:id="combxOpcAv" layoutX="25.0" layoutY="515.0" prefWidth="150.0" />
+
                     </children>
                 </AnchorPane>
 
-                <AnchorPane minWidth="0.0" minHeight="0.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0">
                     <children>
+                        <AnchorPane fx:id="panelDerecho" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 
-                        <AnchorPane fx:id="panelDerecho"
-                                    AnchorPane.topAnchor="0.0"
-                                    AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0"/>
-
-                        <AnchorPane layoutX="650.0" layoutY="15.0"
-                                    prefWidth="260.0" prefHeight="180.0"
-                                    styleClass="panel-resultado"
-                                    AnchorPane.topAnchor="15.0"
-                                    AnchorPane.rightAnchor="15.0">
+                        <AnchorPane layoutX="650.0" layoutY="15.0" prefHeight="180.0" prefWidth="260.0" styleClass="panel-resultado" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                             <children>
-                                <Label text="Resultado de ruta"
-                                       layoutX="15.0" layoutY="10.0"
-                                       styleClass="label-resultado"/>
-
-                                <TextArea fx:id="txtResultadoRuta"
-                                          layoutX="15.0" layoutY="40.0"
-                                          prefWidth="230.0" prefHeight="120.0"
-                                          editable="false"
-                                          wrapText="true"
-                                          promptText="Aquí se mostrará el resumen de la ruta calculada..."/>
+                                <Label layoutX="15.0" layoutY="10.0" styleClass="label-resultado" text="Resultado de ruta" />
+                                <TextArea fx:id="txtResultadoRuta" editable="false" layoutX="15.0" layoutY="40.0" prefHeight="120.0" prefWidth="230.0" promptText="Aquí se mostrará el resumen de la ruta calculada..." wrapText="true" />
                             </children>
                         </AnchorPane>
-
                     </children>
                 </AnchorPane>
-
             </items>
         </SplitPane>
     </children>

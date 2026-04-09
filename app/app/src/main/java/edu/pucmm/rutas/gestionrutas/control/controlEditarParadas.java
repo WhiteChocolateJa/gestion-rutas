@@ -4,10 +4,7 @@ import edu.pucmm.rutas.gestionrutas.database.ParadaDAO;
 import edu.pucmm.rutas.gestionrutas.modelo.Parada;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -96,14 +93,22 @@ public class controlEditarParadas {
             return;
         }
 
-        String id = paradaSeleccionada.getId();
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmar Eliminación");
+        alerta.setHeaderText("Eliminar la parada: " + paradaSeleccionada.getNombre());
+        alerta.setContentText("Si eliminas esta parada, el mapa podría  dejar de ser conexo.\n\n¿Deseas continuar?");
 
-        paradaDAO.eliminar(id);
+        alerta.showAndWait();
 
-        cargarParadas();
-        limpiarCampos();
+        if (alerta.getResult() == ButtonType.OK) {
+            String id = paradaSeleccionada.getId();
+            paradaDAO.eliminar(id);
 
-        mostrarInformacion("Parada eliminada correctamente.");
+            cargarParadas();
+            limpiarCampos();
+            mostrarInformacion("Parada eliminada correctamente.");
+
+        }
     }
 
     @FXML

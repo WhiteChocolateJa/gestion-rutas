@@ -38,6 +38,8 @@ public class controlParadas {
     @FXML
     private ComboBox<Parada> cbxDireccion;
 
+    private HelloController helloController;
+
     @FXML
     public void cerrarVentana(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -124,6 +126,7 @@ public class controlParadas {
         Stage ventanaActual = (Stage) txtCodigo.getScene().getWindow();
         ventanaActual.close();
     }
+
     @FXML
     public void initialize() {
         Grafo grafoActual = grafoBaseDatos.cargarGrafo();
@@ -133,8 +136,6 @@ public class controlParadas {
             cbxDireccion.getItems().setAll(grafoActual.getParadas().values());
         }
     }
-
-    private HelloController helloController;
 
     public void setHelloController(HelloController controller) {
         this.helloController = controller;

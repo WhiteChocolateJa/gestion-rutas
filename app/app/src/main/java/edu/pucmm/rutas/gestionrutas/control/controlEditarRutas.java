@@ -147,14 +147,19 @@ public class controlEditarRutas {
             return;
         }
 
-        String idRuta = rutaSeleccionada.getId();
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmar Eliminación");
+        alerta.setHeaderText("¿Eliminar la ruta " + rutaSeleccionada.getId() + "?");
+        alerta.setContentText("Origen: " + rutaSeleccionada.getParadaOrigen().getNombre() + "\n" + "Destino: " + rutaSeleccionada.getParadaDestino().getNombre() + "\n\n" + "Esto podría hacer que el mapa no sea conexo.\n" + "¿Deseas continuar?");
+        alerta.showAndWait();
 
-        rutaDAO.eliminar(idRuta);
-
-        cargarRutas();
-        limpiarCampos();
-
-        mostrarInformacion("Ruta eliminada correctamente.");
+        if (alerta.getResult() == javafx.scene.control.ButtonType.OK) {
+            String idRuta = rutaSeleccionada.getId();
+            rutaDAO.eliminar(idRuta);
+            cargarRutas();
+            limpiarCampos();
+            mostrarInformacion("Ruta eliminada correctamente.");
+        }
     }
 
     @FXML

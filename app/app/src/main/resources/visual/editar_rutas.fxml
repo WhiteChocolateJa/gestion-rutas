@@ -3,88 +3,41 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="460.0" prefWidth="420.0"
-            stylesheets="@styles.css"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="edu.pucmm.rutas.gestionrutas.control.controlEditarRutas">
+<AnchorPane prefHeight="460.0" prefWidth="420.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pucmm.rutas.gestionrutas.control.controlEditarRutas">
     <children>
 
-        <Label layoutX="20.0" layoutY="20.0"
-               text="Administrar Rutas"
-               styleClass="label-titulo"/>
+        <Label layoutX="20.0" layoutY="20.0" styleClass="label-titulo" text="Administrar Rutas" />
 
-        <Label layoutX="20.0" layoutY="65.0"
-               text="Ruta"/>
+        <Label layoutX="20.0" layoutY="65.0" text="Ruta" />
 
-        <ComboBox fx:id="cbxRutas"
-                  layoutX="20.0" layoutY="90.0"
-                  prefWidth="280.0"
-                  promptText="Seleccione una ruta"
-                  onAction="#cargarDatosRuta"/>
+        <ComboBox fx:id="cbxRutas" layoutX="20.0" layoutY="90.0" onAction="#cargarDatosRuta" prefWidth="280.0" promptText="Seleccione una ruta" />
 
-        <Label layoutX="20.0" layoutY="135.0"
-               text="Código"/>
-        <TextField fx:id="txtCodigoRuta"
-                   layoutX="120.0" layoutY="130.0"
-                   prefWidth="260.0"
-                   promptText="Código"
-                   editable="false"/>
+        <Label layoutX="20.0" layoutY="135.0" text="Código" />
+        <TextField fx:id="txtCodigoRuta" editable="false" layoutX="120.0" layoutY="130.0" prefWidth="260.0" promptText="Código" />
 
-        <Label layoutX="20.0" layoutY="175.0"
-               text="Origen"/>
-        <ComboBox fx:id="cbxOrigen"
-                  layoutX="120.0" layoutY="170.0"
-                  prefWidth="260.0"
-                  promptText="Parada origen"/>
+        <Label layoutX="20.0" layoutY="175.0" text="Origen" />
+        <ComboBox fx:id="cbxOrigen" disable="true" layoutX="120.0" layoutY="170.0" prefWidth="260.0" promptText="Parada origen" />
 
-        <Label layoutX="20.0" layoutY="215.0"
-               text="Destino"/>
-        <ComboBox fx:id="cbxDestino"
-                  layoutX="120.0" layoutY="210.0"
-                  prefWidth="260.0"
-                  promptText="Parada destino"/>
+        <Label layoutX="20.0" layoutY="215.0" text="Destino" />
+        <ComboBox fx:id="cbxDestino" disable="true" layoutX="120.0" layoutY="210.0" prefWidth="260.0" promptText="Parada destino" />
 
-        <Label layoutX="20.0" layoutY="255.0"
-               text="Tiempo (min)"/>
-        <Spinner fx:id="spnTiempo"
-                 layoutX="120.0" layoutY="250.0"
-                 prefWidth="260.0"/>
+        <Label layoutX="20.0" layoutY="255.0" text="Tiempo (min)" />
+        <Spinner fx:id="spnTiempo" layoutX="120.0" layoutY="250.0" prefWidth="260.0" />
 
-        <Label layoutX="20.0" layoutY="295.0"
-               text="Distancia (m)"/>
-        <Spinner fx:id="spnDistancia"
-                 layoutX="120.0" layoutY="290.0"
-                 prefWidth="260.0"/>
+        <Label layoutX="20.0" layoutY="295.0" text="Distancia (m)" />
+        <Spinner fx:id="spnDistancia" layoutX="120.0" layoutY="290.0" prefWidth="260.0" />
 
-        <Label layoutX="20.0" layoutY="335.0"
-               text="Costo"/>
-        <Spinner fx:id="spnCosto"
-                 layoutX="120.0" layoutY="330.0"
-                 prefWidth="260.0"/>
+        <Label layoutX="20.0" layoutY="335.0" text="Costo" />
+        <Spinner fx:id="spnCosto" layoutX="120.0" layoutY="330.0" prefWidth="260.0" />
 
-        <Label layoutX="20.0" layoutY="375.0"
-               text="Transbordo"/>
-        <Spinner fx:id="spnTransbordo"
-                 layoutX="120.0" layoutY="370.0"
-                 prefWidth="260.0"/>
+        <Label layoutX="20.0" layoutY="375.0" text="Transbordo" />
+        <Spinner fx:id="spnTransbordo" layoutX="120.0" layoutY="370.0" prefWidth="260.0" />
 
-        <Button text="Cerrar"
-                layoutX="90.0" layoutY="420.0"
-                prefWidth="90.0"
-                onAction="#cerrarVentana"/>
+        <Button layoutX="90.0" layoutY="420.0" onAction="#cerrarVentana" prefWidth="90.0" text="Cerrar" />
 
-        <Button text="Eliminar"
-                layoutX="190.0" layoutY="420.0"
-                prefWidth="100.0"
-                styleClass="button-danger"
-                onAction="#eliminarRuta"/>
+        <Button layoutX="190.0" layoutY="420.0" onAction="#eliminarRuta" prefWidth="100.0" styleClass="button-danger" text="Eliminar" />
 
-        <Button text="Modificar"
-                layoutX="300.0" layoutY="420.0"
-                prefWidth="100.0"
-                styleClass="button-primary"
-                onAction="#modificarRuta"/>
+        <Button layoutX="300.0" layoutY="420.0" onAction="#modificarRuta" prefWidth="100.0" styleClass="button-primary" text="Modificar" />
 
     </children>
 </AnchorPane>
