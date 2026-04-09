@@ -296,3 +296,17 @@ Label {
     -fx-background-color: #D1D9E6;
     -fx-padding: 0 1;
 }
+
+.tooltip {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #bfc7d5;
+    -fx-border-radius: 8;
+    -fx-padding: 8;
+    -fx-font-size: 12px;
+}
+
+.tooltip .label {
+    -fx-text-fill: black;
+}
