@@ -47,33 +47,6 @@ public class controlParadas {
     }
 
     @FXML
-    public void aceptarLaParada() {
-
-        String codigo = txtCodigo.getText().trim();
-        String nombre = txtNombre.getText().trim();
-
-        if (codigo.isEmpty() || nombre.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Debe completar los campos obligatorios: Código y Nombre.");
-            alert.showAndWait();
-            return;
-        }
-
-        Parada parada = new Parada(codigo, nombre, 0.0, 0.0);
-        parada.setDescripcion(txtDescripcion.getText());
-        parada.setZona(txtZona.getText());
-
-        elGrafo.anadirParada(parada);
-        grafoBaseDatos.sincronizar(elGrafo);
-        elGrafo = grafoBaseDatos.cargarGrafo();
-
-        Stage stage = (Stage) txtCodigo.getScene().getWindow();
-        stage.close();
-    }
-
-    @FXML
     public void continuarACrearRuta() throws IOException {
 
         String codigo = txtCodigo.getText().trim();

@@ -29,7 +29,6 @@ public class BFS {
 
             for (Ruta ruta : grafo.getRutas().values()) {
                 if (ruta.getParadaOrigen().getId().equals(actual.getId())) {
-
                     Parada vecino = ruta.getParadaDestino();
 
                     if (!visitados.contains(vecino.getId())) {

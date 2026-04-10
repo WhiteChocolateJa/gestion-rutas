@@ -104,11 +104,11 @@ public class Parada {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Parada otra = (Parada) obj;
-        return this.getId().equals(otra.getId()); // o usa tu id único
+        return this.getId().equals(otra.getId());
     }
 
     @Override
     public int hashCode() {
-        return getId().hashCode(); // o tu id único
+        return getId().hashCode();
     }
 }

@@ -119,15 +119,7 @@ public class controlEditarRutas {
         double costo = spnCosto.getValue();
         int transbordos = spnTransbordo.getValue();
 
-        Ruta rutaActualizada = new Ruta(
-                rutaSeleccionada.getId(),
-                origen,
-                destino,
-                tiempo,
-                distancia,
-                costo,
-                transbordos
-        );
+        Ruta rutaActualizada = new Ruta(rutaSeleccionada.getId(), origen, destino, tiempo, distancia, costo, transbordos);
 
         rutaDAO.actualizar(rutaActualizada);
 
