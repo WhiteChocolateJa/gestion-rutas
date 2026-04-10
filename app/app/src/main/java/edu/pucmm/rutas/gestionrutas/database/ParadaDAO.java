@@ -8,9 +8,23 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+   Clase: ParadaDAO
+   Esta clase se encarga de gestionar las operaciones de base de datos relacionadas con las paradas.
+   Permite guardar, actualizar, eliminar y consultar paradas en la base de datos.
+   Funciona como intermediario entre la base de datos y el modelo Parada.
+*/
+
 public class ParadaDAO {
 
-    // GUARDA UNA PARADA NUEVA EN LA BASE DE DATOS
+/*
+   Método: guardar
+   Este método inserta una nueva parada en la base de datos utilizando una consulta SQL.
+   Toma los datos del objeto Parada y los envía a la tabla correspondiente.
+   Retorno:
+      - No devuelve ningún valor.
+*/
+
     public void guardar(Parada parada) {
         String sql = "INSERT INTO paradas (id, nombre, x, y, activa, descripcion, zona) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -34,7 +48,14 @@ public class ParadaDAO {
         }
     }
 
-    // ACTUALIZA LOS DATOS DE UNA PARADA EXISTENTE
+/*
+   Método: actualizar
+   Este método actualiza los datos de una parada existente en la base de datos según su id.
+   Ejecuta una consulta SQL UPDATE y verifica si la operación afectó alguna fila.
+   Retorno:
+      - No devuelve ningún valor.
+*/
+
     public void actualizar(Parada parada) {
         String sql = "UPDATE paradas SET nombre = ?, x = ?, y = ?, activa = ?, descripcion = ?, zona = ? WHERE id = ?";
 
@@ -63,7 +84,14 @@ public class ParadaDAO {
         }
     }
 
-    // ELIMINA UNA PARADA SEGUN SU ID
+/*
+   Método: eliminar
+   Este método elimina una parada de la base de datos utilizando su id.
+   Ejecuta una consulta SQL DELETE y verifica si la eliminación fue exitosa.
+   Retorno:
+      - No devuelve ningún valor.
+*/
+
     public void eliminar(String id) {
         String sql = "DELETE FROM paradas WHERE id = ?";
 
@@ -86,7 +114,16 @@ public class ParadaDAO {
         }
     }
 
-    // BUSCA UNA PARADA POR SU ID Y LA DEVUELVE SI EXISTE
+/*
+   Método: buscarPorId
+   Este método busca una parada específica en la base de datos utilizando su id.
+   Si la encuentra, crea un objeto Parada con los datos obtenidos y lo devuelve.
+   Si no existe, retorna null.
+   Retorno:
+      - Devuelve un objeto Parada si se encuentra.
+      - Devuelve null si no existe.
+*/
+
     public Parada buscarPorId(String id) {
         String sql = "SELECT * FROM paradas WHERE id = ?";
 
@@ -120,7 +157,13 @@ public class ParadaDAO {
         return null;
     }
 
-    // OBTIENE TODAS LAS PARADAS DE LA BASE DE DATOS
+/*
+   Método: obtenerTodas
+   Este método obtiene todas las paradas almacenadas en la base de datos.
+   Recorre los resultados de la consulta SQL y crea una lista de objetos Parada.
+   Retorno:
+      - Devuelve una lista de objetos Parada.
+*/
     public List<Parada> obtenerTodas() {
         List<Parada> paradas = new ArrayList<>();
         String sql = "SELECT * FROM paradas ORDER BY id";

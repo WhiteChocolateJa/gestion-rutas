@@ -25,6 +25,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+   Clase: HelloController
+   Esta clase es el controlador principal de la aplicación.
+   Se encarga de manejar la interfaz principal, cargar y refrescar el grafo,
+   abrir las ventanas secundarias, calcular rutas óptimas, resaltar resultados en el mapa
+   y mostrar información visual al usuario.
+   También conecta la lógica del sistema con los algoritmos y la base de datos.
+*/
 public class HelloController {
 
     private static final GrafoRepository grafoBaseDatos = new GrafoRepository();
@@ -64,7 +73,15 @@ public class HelloController {
 
     private SmartGraphPanel<Parada, Ruta> panelVisual;
 
-
+    /*
+       Método: initialize
+       Este método se ejecuta automáticamente al cargar la ventana principal.
+       Se encarga de configurar las opciones avanzadas, activar o desactivar el ComboBox de algoritmos,
+       definir eventos para recalcular la ruta cuando el usuario cambia opciones,
+       y finalmente cargar la vista inicial del grafo.
+       Retorno:
+          - No devuelve ningún valor.
+    */
     @FXML
     public void initialize() {
         if (combxOpcAv != null && cbxOpcAv != null) {
@@ -94,6 +111,17 @@ public class HelloController {
         refrescarVista();
     }
 
+
+    /*
+   Método: refrescarVista
+   Este método recarga el grafo desde la base de datos y actualiza todos los elementos visuales de la interfaz.
+   Primero vuelve a cargar el grafo actual, luego llena los ComboBox de criterios, origen y destino.
+   Después convierte el grafo interno al formato de la librería visual,
+   crea el panel gráfico y lo coloca en el panel derecho de la ventana.
+   Finalmente inicializa el grafo visual y asigna los tooltips a nodos y rutas.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     public void refrescarVista() {
         Grafo miGrafo = grafoBaseDatos.cargarGrafo();
         elGrafo = miGrafo;
@@ -133,6 +161,15 @@ public class HelloController {
     }
 
 
+    /*
+   Método: abrirCreacionParado
+   Este método abre la ventana para crear una nueva parada.
+   Carga el archivo FXML correspondiente, crea una nueva escena y una nueva ventana,
+   obtiene el controlador de esa ventana y le pasa una referencia de este controlador principal.
+   Cuando la ventana se cierra, refresca la vista principal.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     @FXML
     public void abrirCreacionParado() throws IOException {
         FXMLLoader loader = new FXMLLoader(
@@ -151,6 +188,15 @@ public class HelloController {
         refrescarVista();
     }
 
+    /*
+   Método: abrirCreacionRuta
+   Este método abre la ventana para crear una nueva ruta.
+   Carga el archivo FXML correspondiente, crea la escena y la ventana,
+   obtiene el controlador secundario y le pasa una referencia del controlador principal.
+   Cuando la ventana se cierra, refresca la vista principal.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     @FXML
     public void abrirCreacionRuta() throws IOException {
         FXMLLoader loader = new FXMLLoader(
@@ -169,6 +215,16 @@ public class HelloController {
         refrescarVista();
     }
 
+    /*
+   Método: encontrarMejor
+   Este método decide qué algoritmo usar para calcular la ruta entre dos paradas.
+   Primero carga el grafo actual desde la base de datos.
+   Si las opciones avanzadas están activadas, revisa cuál algoritmo fue seleccionado
+   y ejecuta el correspondiente (Dijkstra, BellmanFord, FloydWarshall, BFS o DFS).
+   Si no hay opciones avanzadas activadas, utiliza Dijkstra por defecto.
+   Retorno:
+      - Devuelve una lista de objetos Parada que representa el camino encontrado.
+*/
     public List<Parada> encontrarMejor(Parada origen, Parada destino, CriterioOptimizacion criterio) {
         Grafo grafoActual = grafoBaseDatos.cargarGrafo();
         if (cbxOpcAv.isSelected()){
@@ -198,6 +254,16 @@ public class HelloController {
             return algoritmoDijkstra.dijkstra(origen, destino, grafoActual, criterio);
     }
 
+
+    /*
+   Método: resaltarRutaEnMapa
+   Este método se encarga de resaltar visualmente en el grafo la ruta encontrada.
+   Primero limpia cualquier resaltado anterior en nodos y rutas.
+   Luego, si existe un camino válido, recorre las paradas del camino y les aplica estilo visual.
+   Después busca cada tramo directo entre dos paradas consecutivas y resalta también las rutas correspondientes.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     public void resaltarRutaEnMapa(List<Parada> camino) {
         for (Parada p : elGrafo.getParadas().values()) {
             try {
@@ -239,6 +305,14 @@ public class HelloController {
         }
     }
 
+    /*
+   Método: abrirEditarParadas
+   Este método abre la ventana de edición de paradas.
+   Carga el archivo FXML correspondiente, crea una nueva escena y la muestra en una nueva ventana.
+   Cuando la ventana se cierra, refresca la vista principal.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     @FXML
     public void abrirEditarParadas() throws IOException {
         FXMLLoader loader = new FXMLLoader(
@@ -253,6 +327,14 @@ public class HelloController {
         refrescarVista();
     }
 
+    /*
+   Método: abrirEditarRutas
+   Este método abre la ventana de edición de rutas.
+   Carga el archivo FXML correspondiente, crea una nueva escena y la muestra en una nueva ventana.
+   Cuando la ventana se cierra, refresca la vista principal.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     @FXML
     public void abrirEditarRutas() throws IOException {
         FXMLLoader loader = new FXMLLoader(
@@ -267,6 +349,14 @@ public class HelloController {
         refrescarVista();
     }
 
+    /*
+   Método: calcularCostoTotal
+   Este método calcula el costo total de una ruta encontrada según el criterio de optimización seleccionado.
+   Recorre cada par de paradas consecutivas del camino, busca la ruta directa entre ellas
+   y suma el peso correspondiente (tiempo, distancia, costo o transbordos).
+   Retorno:
+      - Devuelve un valor tipo double con el costo total del camino.
+*/
     private double calcularCostoTotal(List<Parada> camino, CriterioOptimizacion criterio) {
         double total = 0;
         for (int i = 0; i < camino.size() - 1; i++) {
@@ -278,6 +368,16 @@ public class HelloController {
         return total;
     }
 
+    /*
+   Método: buscarMostrarRutaOptima
+   Este método obtiene desde la interfaz el origen, el destino y el criterio seleccionados por el usuario.
+   Luego llama al método que calcula la mejor ruta.
+   Si encuentra un camino válido, lo resalta en el grafo, calcula su costo total
+   y muestra el resultado en el área de texto de la interfaz.
+   Si no encuentra ruta o faltan datos, limpia el resaltado y muestra el mensaje correspondiente.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     @FXML
     public void buscarMostrarRutaOptima() {
         Parada origen = cbxOrigen2.getValue();
@@ -309,6 +409,18 @@ public class HelloController {
         }
     }
 
+    /*
+   Método: origenDeLaConexion
+   Este método agrega una nueva conexión al grafo y aplica la lógica que intenta mantener integrada la red.
+   Primero obtiene las referencias reales de las paradas dentro del grafo actual.
+   Luego agrega la ruta propuesta.
+   Si solo existen dos paradas y una ruta, crea automáticamente la ruta inversa.
+   Si hay más de dos paradas, genera rutas derivadas a partir de conexiones existentes
+   para evitar que el sistema quede desconectado.
+   Finalmente sincroniza el grafo con la base de datos.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     public void origenDeLaConexion(Parada parada1, Parada parada2, Ruta propuesta) {
         Grafo grafoActual = grafoBaseDatos.cargarGrafo();
 
@@ -351,6 +463,15 @@ public class HelloController {
         grafoBaseDatos.sincronizar(grafoActual);
     }
 
+    /*
+   Método: instalarTooltips
+   Este método asigna tooltips a las paradas y rutas del grafo visual.
+   En cada parada muestra información como código, nombre, zona y descripción.
+   En cada ruta muestra origen, destino, tiempo, distancia, costo y transbordos.
+   Los tooltips aparecen al dejar el cursor sobre el elemento durante un breve tiempo.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     private void instalarTooltips() {
 
         for (Parada p : elGrafo.getParadas().values()) {

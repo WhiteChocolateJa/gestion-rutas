@@ -6,8 +6,30 @@ import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
 
 import java.util.*;
 
+
+/*
+   Clase: BFS
+   Esta clase implementa el algoritmo Breadth-First Search (Búsqueda en Anchura).
+   Se utiliza para encontrar un camino entre dos paradas recorriendo el grafo por niveles,
+   es decir, explorando primero las rutas más cercanas antes de profundizar.
+*/
 public class BFS {
 
+
+    /*
+       Método: buscarCamino
+       Este método busca un camino entre una parada origen y una parada destino utilizando BFS.
+       Primero valida que los datos no sean nulos.
+       Luego utiliza una cola para recorrer el grafo por niveles, un conjunto de visitados para no repetir paradas,
+       y un mapa de anteriores para reconstruir el camino final.
+       Comienza agregando la parada origen a la cola y marcándola como visitada.
+       Después recorre el grafo sacando elementos de la cola y agregando sus vecinos no visitados.
+       Cuando encuentra el destino, detiene la búsqueda.
+       Finalmente, reconstruye el camino desde el destino hasta el origen utilizando el mapa de anteriores.
+       Retorno:
+          - Devuelve una lista de objetos Parada que representa el camino encontrado.
+          - Si no existe ruta, devuelve una lista vacía.
+    */
     public List<Parada> buscarCamino(Parada origen, Parada destino, Grafo grafo) {
         if (origen == null || destino == null || grafo == null) {
             return new ArrayList<>();

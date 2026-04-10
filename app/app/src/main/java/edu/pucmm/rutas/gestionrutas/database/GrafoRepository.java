@@ -6,18 +6,40 @@ import edu.pucmm.rutas.gestionrutas.modelo.Ruta;
 
 import java.util.List;
 
+
+/*
+   Clase: GrafoRepository
+   Esta clase se encarga de conectar el grafo del sistema con la base de datos.
+   Permite cargar toda la información desde la base de datos para construir el grafo,
+   y también guardar los cambios del grafo nuevamente en la base de datos.
+*/
+
 public class GrafoRepository {
 
     private ParadaDAO paradaDAO;
     private RutaDAO rutaDAO;
+
+    /*
+   Constructor
+   Se encarga de inicializar los objetos ParadaDAO y RutaDAO, los cuales permiten acceder a la base de datos.
+   Esto permite que la clase pueda trabajar tanto con paradas como con rutas.
+   No devuelve ningún valor.
+*/
 
     public GrafoRepository() {
         this.paradaDAO = new ParadaDAO();
         this.rutaDAO = new RutaDAO();
     }
 
-    // Carga el grafo completo desde la base de datos.
-    // Primero se cargan las paradas y luego las rutas.
+/*
+   Método: cargarGrafo
+   Este método construye un grafo completo a partir de los datos almacenados en la base de datos.
+   Primero obtiene todas las paradas y las agrega al grafo, y luego obtiene todas las rutas y las conecta.
+   De esta forma se reconstruye la estructura completa del sistema en memoria.
+   Retorno:
+      - Devuelve un objeto Grafo completamente cargado.
+*/
+
     public Grafo cargarGrafo() {
         Grafo grafo = new Grafo();
 
@@ -34,9 +56,15 @@ public class GrafoRepository {
         return grafo;
     }
 
-    // Sincroniza el grafo actual con la base de datos.
-    // Esta versión elimina todos los registros existentes
-    // y luego vuelve a insertar el contenido actual del grafo.
+/*
+   Método: sincronizar
+   Este método actualiza la base de datos con el estado actual del grafo.
+   Primero elimina todas las rutas y paradas existentes en la base de datos,
+   y luego vuelve a insertar todas las paradas y rutas que están en el grafo actual.
+   Esto garantiza que la base de datos refleje exactamente el contenido del grafo.
+   Retorno:
+      - No devuelve ningún valor.
+*/
     public void sincronizar(Grafo grafo) {
 
         List<Ruta> rutasExistentes = rutaDAO.obtenerTodas();

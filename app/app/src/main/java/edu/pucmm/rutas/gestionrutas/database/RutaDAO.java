@@ -9,9 +9,25 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+   Clase: RutaDAO
+   Esta clase se encarga de gestionar las operaciones de base de datos relacionadas con las rutas.
+   Permite guardar, actualizar, eliminar y consultar rutas en la base de datos.
+   Funciona como intermediario entre la base de datos y el modelo Ruta.
+*/
+
+
 public class RutaDAO {
 
-    // GUARDA UNA RUTA NUEVA EN LA BASE DE DATOS
+/*
+   Método: guardar
+   Este método inserta una nueva ruta en la base de datos utilizando una consulta SQL.
+   Toma los datos del objeto Ruta y guarda tanto sus métricas como los ids de las paradas de origen y destino.
+   Retorno:
+      - No devuelve ningún valor.
+*/
+
     public void guardar(Ruta ruta) {
         String sql = "INSERT INTO rutas (id, parada_origen_id, parada_destino_id, tiempo_viaje, distancia, costo, transbordos) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -36,7 +52,14 @@ public class RutaDAO {
         }
     }
 
-    // ACTUALIZA UNA RUTA EXISTENTE SEGUN SU ID
+/*
+   Método: actualizar
+   Este método actualiza los datos de una ruta existente en la base de datos según su id.
+   Modifica las referencias de origen y destino, así como el tiempo, distancia, costo y transbordos.
+   Retorno:
+      - No devuelve ningún valor.
+*/
+
     public void actualizar(Ruta ruta) {
         String sql = "UPDATE rutas SET parada_origen_id = ?, parada_destino_id = ?, tiempo_viaje = ?, distancia = ?, costo = ?, transbordos = ? " +
                 "WHERE id = ?";
@@ -66,7 +89,14 @@ public class RutaDAO {
         }
     }
 
-    // ELIMINA UNA RUTA SEGUN SU ID
+/*
+   Método: eliminar
+   Este método elimina una ruta de la base de datos utilizando su id.
+   Ejecuta una consulta SQL DELETE y verifica si la operación afectó alguna fila.
+   Retorno:
+      - No devuelve ningún valor.
+*/
+
     public void eliminar(String idRuta) {
         String sql = "DELETE FROM rutas WHERE id = ?";
 
@@ -89,7 +119,17 @@ public class RutaDAO {
         }
     }
 
-    // BUSCA UNA RUTA POR SU ID
+/*
+   Método: buscarPorId
+   Este método busca una ruta específica en la base de datos utilizando su id.
+   Para reconstruir correctamente la ruta, primero busca las paradas de origen y destino con ayuda de ParadaDAO.
+   Si ambas existen, crea y devuelve un objeto Ruta completo.
+   Si no existe, retorna null.
+   Retorno:
+      - Devuelve un objeto Ruta si se encuentra.
+      - Devuelve null si no existe.
+*/
+
     public Ruta buscarPorId(String idRuta) {
         String sql = "SELECT * FROM rutas WHERE id = ?";
 
@@ -127,7 +167,14 @@ public class RutaDAO {
         return null;
     }
 
-    // OBTIENE TODAS LAS RUTAS DE LA BASE DE DATOS
+/*
+   Método: obtenerTodas
+   Este método obtiene todas las rutas almacenadas en la base de datos.
+   Recorre los resultados de la consulta SQL y construye una lista de objetos Ruta, buscando también sus paradas asociadas.
+   Retorno:
+      - Devuelve una lista de objetos Ruta.
+*/
+
     public List<Ruta> obtenerTodas() {
         List<Ruta> rutas = new ArrayList<>();
         String sql = "SELECT * FROM rutas ORDER BY id";

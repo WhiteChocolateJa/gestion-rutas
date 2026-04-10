@@ -10,13 +10,27 @@ import java.util.List;
 import java.util.Map;
 
 /*
- * Algoritmo Floyd-Warshall
- *
- * Calcula el costo mínimo entre TODOS los pares de paradas del grafo
- * y reconstruye la ruta óptima entre un origen y destino específicos.
- */
+   Clase: FloydWarshall
+   Esta clase implementa el algoritmo de Floyd-Warshall para encontrar el costo mínimo entre todas las parejas de paradas del grafo.
+   A diferencia de otros algoritmos, calcula todas las rutas posibles de una vez y luego permite reconstruir el camino entre un origen y un destino específico.
+*/
 public class FloydWarshall {
 
+
+    /*
+       Método: algoritmoFloydWarshall
+       Este método calcula la mejor ruta entre una parada origen y una parada destino utilizando el algoritmo de Floyd-Warshall.
+       Primero valida que los datos sean correctos.
+       Luego convierte las paradas en una lista y les asigna índices para poder trabajar con matrices.
+       Después inicializa dos matrices: una de distancias y otra para reconstruir el camino.
+       Luego carga los valores iniciales según las rutas existentes en el grafo.
+       A continuación, utiliza tres ciclos anidados para evaluar si pasar por una parada intermedia mejora el costo entre dos paradas.
+       Este proceso permite encontrar el costo mínimo entre todos los pares de nodos.
+       Finalmente, reconstruye el camino desde el origen hasta el destino utilizando la matriz de seguimiento.
+       Retorno:
+          - Devuelve una lista de objetos Parada que representa la ruta óptima encontrada.
+          - Si no existe ruta, devuelve una lista vacía.
+    */
     public List<Parada> algoritmoFloydWarshall(Parada origen, Parada destino, Grafo grafo, CriterioOptimizacion criterio) {
 
         if (origen == null || destino == null || grafo == null ||
@@ -37,7 +51,7 @@ public class FloydWarshall {
 
         int[][] siguiente = new int[n][n];
 
-        // 1. Inicializar las matrices
+        //Inicializar las matrices
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 distan[i][j] = Double.POSITIVE_INFINITY;
